@@ -1,0 +1,105 @@
+const express = require('express');
+const router = express.Router();
+const Book = require('../../models/Book'); 
+
+// @route   POST api/book
+// Create a book
+router.post('/', async (req, res) => {
+  const book = new Book({
+    ...req.body
+  });
+
+  try {
+    const newBook = await book.save();
+    res.status(201).json(newBook);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+});
+
+// @route   GET api/book
+// Get all books
+router.get('/', async (req, res) => {
+  try {
+    const books = await Book.find();
+    res.json(books);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+// @route   GET api/book/isbn/:isbn
+// Get book by ISBN
+router.get('/isbn/:isbn', async (req, res) => {
+  try {
+    const book = await Book.findOne({ isbn: req.params.isbn });
+    if (!book) {
+      return res.status(404).json({ message: 'Cannot find book' });
+    }
+    res.json(book);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+// @route   GET api/book/:id
+// Get book by ID
+router.get('/:id', async (req, res) => {
+  try {
+    const book = await Book.findById(req.params.id);
+    if (!book) {
+      return res.status(404).json({ message: 'Cannot find book' });
+    }
+    res.json(book);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+// @route   GET api/book/vendor/:vendor_id
+// Get all books for a vendor_id
+router.get('/vendor/:vendor_id', async (req, res) => {
+  try {
+    const books = await Book.find({ vendor_id: req.params.vendor_id });
+    if (books.length === 0) {
+      return res.status(404).json({ message: 'No books found for this vendor' });
+    }
+    res.json(books);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+// @route   PUT api/book/:id
+// Update a book
+router.put('/:id', async (req, res) => {
+  try {
+    const updatedBook = await Book.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true, runValidators: true }
+    );
+    if (!updatedBook) {
+      return res.status(404).json({ message: 'Cannot find book' });
+    }
+    res.json(updatedBook);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+});
+
+// @route   DELETE api/book/:id
+// Delete a book
+router.delete('/:id', async (req, res) => {
+  try {
+    const book = await Book.findByIdAndDelete(req.params.id);
+    if (!book) {
+      return res.status(404).json({ message: 'Cannot find book' });
+    }
+    res.json({ message: 'Deleted Book' });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+module.exports = router;

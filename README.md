@@ -5,25 +5,24 @@
 # Steps to Install and Run:
 
 ### Development
+_populate with dummy data and run app_
 
-_You'll need two different command prompts running concurrently_
+#### 1. Install client dependencies
 
-#### 1. Run React Dev Environment
-
-in `\worm\client` directory:
+in `\wormbookstore\client` directory:
 
 ```shell
 npm i
-npm run start
 ```
 
 #### 2. Run Server
+_runs client and server concurrently in a single command prompt_
 
-in `\worm` directory:
+in `\wormbookstore` directory:
 
 ```shell
 npm i
-node index.js
+npm run dev 
 ```
 
 #### 3. Go to http://localhost:3000
@@ -31,10 +30,11 @@ node index.js
 ---
 
 ### Production
+_You'll need two different command prompts running concurrently_
 
 #### 1. Create React Production Build
 
-in `\worm\client` directory:
+in `\wormbookstore\client` directory:
 
 ```shell
 npm i
@@ -45,11 +45,11 @@ npm run build
 
 #### 2. Run Server
 
-in `\worm` directory:
+in `\wormbookstore` directory:
 
 ```shell
 npm i
-node index.js
+node server.js
 ```
 
 #### Go to http://localhost:5000
