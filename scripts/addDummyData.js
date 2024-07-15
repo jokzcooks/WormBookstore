@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+require('dotenv').config();
 
 const Book = require('../models/Book');
 const { Customer, Admin } = require('../models/User');
@@ -15,9 +16,8 @@ const promotions = require('../dummy_data/dummyPromotions');
 const vendors = require('../dummy_data/dummyVendors');
 const employees = require('../dummy_data/dummyEmployees');
 
-const uri = 'mongodb+srv://aa13809:1direction5freddie@cluster0.qom8ksk.mongodb.net/Online_Bookstore?retryWrites=true&w=majority';
-
-mongoose.connect(uri)
+const mongoDB = process.env.MONGO_URL;
+mongoose.connect(mongoDB)
   .then(async () => {
     console.log('MongoDB connected...');
     await clearDatabase();
