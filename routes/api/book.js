@@ -102,4 +102,34 @@ router.delete('/:id', async (req, res) => {
   }
 });
 
+// @route   GET api/book/featured
+// Get 3 featured books
+router.get('/featured', async (req, res) => {
+  try {
+    const featuredBooks = await Book.aggregate([{ $sample: { size: 3 } }]);
+    res.json(featuredBooks);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+// @route   GET api/book/author/:author
+// Get books by author
+router.get('/author/:author', async (req, res) => {
+  const author = req.params.author;
+  if (!author) {
+    return res.status(400).json({ message: 'Author parameter is required' });
+  }
+
+  try {
+    const books = await Book.find({ author: new RegExp(author, 'i') });
+    if (books.length === 0) {
+      return res.status(404).json({ message: 'No books found for the specified author' });
+    }
+    res.json(books);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 module.exports = router;
