@@ -4,14 +4,15 @@ import Hero from "../../components/Home/Hero"
 import { HeroIcon } from "../../components/Images"
 import Coming from './../../components/Home/Coming/index';
 
-const HomePage = ({books}) => {
+const HomePage = ({catalog, featured, coming}) => {
+
 
     return (
         <div className="homePageContainer">
             <Hero/>
-            <Featured books={books.slice(0, 3)}/>
-            <Coming books={books.slice(3, 6)}/>
-            <Catalog books={books}/>
+            <Featured books={featured}/>
+            <Coming books={coming}/>
+            <Catalog books={catalog}/>
         </div>
     )
 }

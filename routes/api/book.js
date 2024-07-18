@@ -28,6 +28,29 @@ router.get('/', async (req, res) => {
   }
 });
 
+
+// @route   GET api/book/featured
+// Get 3 featured books
+router.get('/featured', async (req, res) => {
+  try {
+    const featuredBooks = await Book.aggregate([{ $sample: { size: 3 } }]);
+    res.json(featuredBooks);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+// @route   GET api/book/coming
+// Get 3 featured books
+router.get('/coming', async (req, res) => {
+  try {
+    const comingSoonBooks = await Book.aggregate([{ $sample: { size: 3 } }]);
+    res.json(comingSoonBooks);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 // @route   GET api/book/isbn/:isbn
 // Get book by ISBN
 router.get('/isbn/:isbn', async (req, res) => {
@@ -70,6 +93,7 @@ router.get('/vendor/:vendor_id', async (req, res) => {
   }
 });
 
+
 // @route   PUT api/book/:id
 // Update a book
 router.put('/:id', async (req, res) => {
@@ -97,17 +121,6 @@ router.delete('/:id', async (req, res) => {
       return res.status(404).json({ message: 'Cannot find book' });
     }
     res.json({ message: 'Deleted Book' });
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-});
-
-// @route   GET api/book/featured
-// Get 3 featured books
-router.get('/featured', async (req, res) => {
-  try {
-    const featuredBooks = await Book.aggregate([{ $sample: { size: 3 } }]);
-    res.json(featuredBooks);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

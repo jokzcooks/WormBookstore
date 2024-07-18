@@ -17,23 +17,39 @@ const Base = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [cartOpen, setCartOpen] = useState(false)
-  const [books, setBooks] = useState([]);
+
+  const [catalog, setCatalog] = useState([])
+  const [featured, setFeatured] = useState([])
+  const [coming, setComing] = useState([])
+
+
   const [userCart, setUserCart] = useState([]);
     // Mock user data to simulate logged-in user
   const [profileData, setProfileData] = useState();
   console.log("userCart", userCart)
 
   const getBooks = useCallback(() => {
-    fetch('http://localhost:5000/books')
+    fetch('http://localhost:5000/api/book')
       .then(res => res.json())
-      .then(setBooks);
+      .then(setCatalog);
   });
-
+  const getFeatured = useCallback(() => {
+    fetch('http://localhost:5000/api/book/featured')
+      .then(res => res.json())
+      .then(setFeatured);
+  });
+  const getComing = useCallback(() => {
+    fetch('http://localhost:5000/api/book/coming')
+      .then(res => res.json())
+      .then(setComing);
+  });
   useEffect(() => {
     if (location.pathname === '/') {
       navigate("/home"); // Navigate to home only if on the root path
     }
     getBooks();
+    getFeatured();
+    getComing();
   }, [navigate, location.pathname]);
 
   const addItemToCart = (item) => {
@@ -67,7 +83,7 @@ const Base = () => {
     <div className='mainContainer'>
         <Header toggleCartOpen={() => {cartOpen ? setCartOpen(false) : setCartOpen(true)}} />
         <Routes>
-            <Route path='/home' element={<HomePage books={books} position="home"/>} />
+            <Route path='/home' element={<HomePage catalog={catalog} featured={featured} coming={coming} position="home"/>} />
             <Route path='/profile' element={<ProfilePage userData={profileData} setUserData={data => setProfileData(data)}/>} />
             <Route path='/search' element={<SearchPage/>} />
             <Route path='/search/:searchTerm' element={<SearchPage/>} />
@@ -75,7 +91,7 @@ const Base = () => {
             <Route path='/register' element={<RegisterPage login={() => handleLogIn()}/>} />
             <Route path='/confirmReg' element={<ConfirmRegistration/>} />
             <Route path='/receipt' element={<ReceiptPage cartItems={userCart}/>} />
-            <Route path='/product/:id' element={<ProductPage openCart={() => setCartOpen(true)} addToCart={item => addItemToCart(item)} allBooks={books} />} />
+            <Route path='/product/:id' element={<ProductPage openCart={() => setCartOpen(true)} addToCart={item => addItemToCart(item)} allBooks={catalog} />} />
             <Route path='/admin/*' element={<AdminPage />} /> {/* doesnt work */}
             <Route path='/checkout' element={<CheckoutPage userData={profileData} cartItems={userCart} />} /> {/* doesnt work */}
         </Routes>
