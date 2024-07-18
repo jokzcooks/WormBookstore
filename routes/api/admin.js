@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { Admin } = require('../../models/User'); // Adjust the path according to your file structure
+const { Admin } = require('../../db/models/User'); // Adjust the path according to your file structure
 
 // @route   POST api/admin
 // Create a new admin

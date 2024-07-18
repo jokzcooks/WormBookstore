@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const Order = require('../../models/Order'); 
+const Order = require('../../db/models/Order'); 
 
 // @route   POST api/order
 // Create a new order

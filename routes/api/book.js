@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const Book = require('../../models/Book'); 
+const Book = require('../../db/models/Book'); 
 
 // @route   POST api/book
 // Create a book

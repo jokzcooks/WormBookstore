@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { Customer } = require('../../models/User'); // Adjust the path according to your file structure
+const { Customer } = require('../../db/models/User'); // Adjust the path according to your file structure
 
 // @route   POST api/customer
 // Create a new customer

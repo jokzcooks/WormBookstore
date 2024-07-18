@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const Vendor = require('../../models/Vendor'); 
+const Vendor = require('../../db/models/Vendor'); 
 
 // @route   POST api/vendor
 // Create a new vendor

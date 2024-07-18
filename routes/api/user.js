@@ -6,7 +6,7 @@ const { sendEmail } = require('../../emailService');
 
 
 
-const { User } = require('../../models/User');
+const { User } = require('../../db/models/User');
 
 
 // @route   PUT api/user/editProfile

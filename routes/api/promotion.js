@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const Promotion = require('../../models/Promotion'); 
+const Promotion = require('../../db/models/Promotion'); 
 
 // @route   POST api/promotion
 // Create a new promotion
