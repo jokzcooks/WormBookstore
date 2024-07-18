@@ -40,9 +40,9 @@ const Header = ({toggleCartOpen}) => {
                 }
                 {   hideList.indexOf(location.pathname) == -1 &&
                     <div className="wormIcons">
-                        <img onClick={e => goTo(e, "/profile")} src={ProfileIcon} alt="" srcset="" />
-                        <img onClick={e => goTo(e, "/search/ /")} src={SearchIcon} alt="" srcset="" />
-                        <img onClick={e => toggleCartOpen()} src={CartIcon} alt="" srcset="" />
+                        <img onClick={e => goTo(e, "/profile")} src={ProfileIcon} alt="" srcSet="" />
+                        <img onClick={e => goTo(e, "/search/ /")} src={SearchIcon} alt="" srcSet="" />
+                        <img onClick={e => toggleCartOpen()} src={CartIcon} alt="" srcSet="" />
                     </div>
                 }
             </div>
