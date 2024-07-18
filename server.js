@@ -5,6 +5,7 @@ const path = require('path');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 
+const search = require('./routes/api/search');
 const users = require('./routes/api/user');
 const customers = require('./routes/api/customer');
 const admins = require('./routes/api/admin');
@@ -13,6 +14,7 @@ const orders = require('./routes/api/order');
 const promotions = require('./routes/api/promotion');
 const vendors = require('./routes/api/vendor');
 const employees = require('./routes/api/employee');
+const Book = require('./db/models/Book');
 
 const app = express();
 
@@ -29,6 +31,7 @@ mongoose.connect(mongoDB)
     .catch(err => console.log('Connection error:', err));
 
 // API routes
+app.use('/api/search', search)
 app.use('/api/user', users);
 app.use('/api/customer', customers);
 app.use('/api/admin', admins);
@@ -41,25 +44,6 @@ app.use('/api/employee', employees);
 // Serve React app
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname + '/client/src/index.js'));
-});
-
-// Search route
-app.get("/search/:searchTerm", async (req, res) => {
-    try {
-        const searchTerm = req.params.searchTerm.toLowerCase().replace(/ /mg, "")
-        console.log("looking for search term", searchTerm)
-        const found = []
-        const bookList = await Books.find({})
-        bookList.forEach(book => {
-            if (JSON.stringify(book).replace(/ /mg, "").toLowerCase().includes(searchTerm)) {
-                found.push(book)
-            }
-        })
-        res.status(200).json(found)
-    } catch (e) {
-        console.log(e)
-        res.status(404).end()
-    }
 });
 
 const port = process.env.PORT || 5000;

@@ -20,7 +20,7 @@ const SearchPage = ({}) => {
     const getSearchResults = useCallback(() => {
         setSearchResults({})
         if (search && search.replace(/ /mg, "") != "")
-      fetch(`http://localhost:5000/search/${search}`)
+      fetch(`http://localhost:5000/api/search/${search}`)
         .then(res => res.json())
         .then(setSearchResults);
     });
