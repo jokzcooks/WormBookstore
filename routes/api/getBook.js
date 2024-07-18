@@ -8,6 +8,7 @@ const port = 3000;
 // MongoDB connection URI
 const uri = 'mongodb+srv://team5:Team5@cluster0.qom8ksk.mongodb.net/Online_Bookstore?retryWrites=true&w=majority&appName=Cluster0';
 
+// Mongo connect
 mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => {
     console.log('MongoDB connected...');
