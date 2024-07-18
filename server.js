@@ -20,10 +20,12 @@ const app = express();
 app.use(bodyParser.json());
 app.use(cors());
 app.use(express.static(path.join(__dirname, 'client/src')));
+app.use(express.json());
+
 
 const mongoDB = process.env.MONGO_URL;
 mongoose.connect(mongoDB)
-    .then(async () => console.log('Connected to MongoDB'))
+    .then( () => console.log('Connected to MongoDB'))
     .catch(err => console.log('Connection error:', err));
 
 // API routes
