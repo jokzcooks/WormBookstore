@@ -13,7 +13,8 @@ const books = [
     min_threshold: 10,
     buy_price: 10.00,
     sell_price: 15.00,
-    vendor_id: "60d5ec49f5ee3e2ddca25b01"
+    vendor_id: "60d5ec49f5ee3e2ddca25b01",
+    description: "A philosophical book about a shepherd named Santiago and his journey to find a treasure, teaching the importance of listening to one's heart and following one's dreams."
   },
   {
     isbn: "978-0451524935",
@@ -29,7 +30,8 @@ const books = [
     min_threshold: 20,
     buy_price: 7.00,
     sell_price: 10.00,
-    vendor_id: "60d5ec49f5ee3e2ddca25b02"
+    vendor_id: "60d5ec49f5ee3e2ddca25b02",
+    description: "A dystopian novel set in a totalitarian society under constant surveillance, exploring themes of government control, censorship, and individual freedom through the life of Winston Smith."
   },
   {
     isbn: "978-0316769488",
@@ -45,7 +47,8 @@ const books = [
     min_threshold: 10,
     buy_price: 9.00,
     sell_price: 14.00,
-    vendor_id: "60d5ec49f5ee3e2ddca25b01"
+    vendor_id: "60d5ec49f5ee3e2ddca25b01",
+    description: "A novel about teenage rebellion and angst, narrated by the iconic character Holden Caulfield, who experiences the complexities of adolescence and the loss of innocence."
   },
   {
     isbn: "978-0316015844",
@@ -61,7 +64,8 @@ const books = [
     min_threshold: 10,
     buy_price: 12.00,
     sell_price: 18.00,
-    vendor_id: "60d5ec49f5ee3e2ddca25b03"
+    vendor_id: "60d5ec49f5ee3e2ddca25b03",
+    description: "A vampire romance novel that tells the story of Bella Swan, a teenage girl who falls in love with Edward Cullen, a vampire, and navigates the dangers and complexities of their relationship."
   },
   {
     isbn: "978-0553573428",
@@ -77,7 +81,8 @@ const books = [
     min_threshold: 20,
     buy_price: 15.00,
     sell_price: 20.00,
-    vendor_id: "60d5ec49f5ee3e2ddca25b04"
+    vendor_id: "60d5ec49f5ee3e2ddca25b04",
+    description: "The first book in the epic fantasy series 'A Song of Ice and Fire,' introducing a world of political intrigue, war, and the struggle for the Iron Throne in the land of Westeros."
   },
   {
     isbn: "978-0062316110",
@@ -93,7 +98,8 @@ const books = [
     min_threshold: 15,
     buy_price: 14.00,
     sell_price: 22.00,
-    vendor_id: "60d5ec49f5ee3e2ddca25b02"
+    vendor_id: "60d5ec49f5ee3e2ddca25b02",
+    description: "A Pulitzer Prize-winning novel that follows the life of Theo Decker, whose mother dies in a terrorist attack at a museum, leaving him with a priceless painting and a life filled with pain and beauty."
   },
   {
     isbn: "978-0061120060",
@@ -109,7 +115,8 @@ const books = [
     min_threshold: 10,
     buy_price: 11.00,
     sell_price: 17.00,
-    vendor_id: "60d5ec49f5ee3e2ddca25b03"
+    vendor_id: "60d5ec49f5ee3e2ddca25b03",
+    description: "A self-help book that explores the law of attraction and how positive thinking can create life-changing results in areas such as health, wealth, and happiness."
   },
   {
     isbn: "978-0743273565",
@@ -125,7 +132,8 @@ const books = [
     min_threshold: 10,
     buy_price: 8.00,
     sell_price: 12.00,
-    vendor_id: "60d5ec49f5ee3e2ddca25b04"
+    vendor_id: "60d5ec49f5ee3e2ddca25b04",
+    description: "A classic novel set in the Jazz Age, exploring themes of decadence, idealism, and social upheaval through the life and times of Jay Gatsby and his obsession with Daisy Buchanan."
   },
   {
     isbn: "978-0385751537",
@@ -141,7 +149,8 @@ const books = [
     min_threshold: 10,
     buy_price: 10.00,
     sell_price: 14.00,
-    vendor_id: "60d5ec49f5ee3e2ddca25b01"
+    vendor_id: "60d5ec49f5ee3e2ddca25b01",
+    description: "A historical novel set in Nazi Germany, narrated by Death, that tells the story of a young girl named Liesel Meminger who finds solace in stealing books and sharing them with others."
   },
   {
     isbn: "978-1250214181",
@@ -157,7 +166,8 @@ const books = [
     min_threshold: 15,
     buy_price: 15.00,
     sell_price: 25.00,
-    vendor_id: "60d5ec49f5ee3e2ddca25b04"
+    vendor_id: "60d5ec49f5ee3e2ddca25b04",
+    description: "A memoir by former First Lady Michelle Obama, detailing her experiences from childhood through her time in the White House, and sharing insights into her personal and professional life."
   }
 ];
 

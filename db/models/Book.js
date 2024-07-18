@@ -10,6 +10,7 @@ const bookSchema = new Schema({
   category: String,
   title: { type: String, required: true },
   author: { type: String, required: true },
+  description: { type: String, required: true},
   rating: Number,
   edition: String,
   publish_year: { type: Number, integer: true },

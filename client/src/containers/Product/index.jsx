@@ -7,7 +7,7 @@ const ProductPage = ({addToCart, openCart}) => {
     const {id} = useParams()
 
     const getBookData = useCallback(() => {
-      fetch(`http://localhost:5000/books/${id}`)
+      fetch(`http://localhost:5000/api/book/isbn/${id}`)
         .then(res => res.json())
         .then(setBookData);
     });
@@ -44,6 +44,9 @@ const ProductPage = ({addToCart, openCart}) => {
     //     "__v": 0
     // }
 
+    console.log(id)
+    console.log(bookData)
+
     return (
         <div className='productPage'>
             <div style={{backgroundImage: `url("${randomGradient}")`}} className='productImageWrapper'>
@@ -62,7 +65,7 @@ const ProductPage = ({addToCart, openCart}) => {
                     <span class="fa fa-star"></span>
                 </div>
                 <p className='description'>{bookData.description}</p>
-                <p className='description'>ISBN: {bookData.ISBN}</p>
+                <p className='description'>ISBN: {bookData.isbn}</p>
                 <button onClick={e => {addToCart({...bookData, quantity: 1}); openCart()}} style={{backgroundImage: `url("${randomGradient}")`}} className='addToCart'>Add To Cart</button>
             </div>
         </div>

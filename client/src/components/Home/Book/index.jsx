@@ -5,26 +5,29 @@ const Book = ({bookData, gradient}) => {
     const navigate = useNavigate()
     
     // {
-    //     "_id": "668484c0de7d7b6ee17c212b",
-    //     "ISBN": "978-0385751537",
-    //     "category": "Young Adult",
-    //     "title": "The Book Thief",
-    //     "author": "Markus Zusak",
-    //     "rating": 4.7,
-    //     "edition": "Reprint Edition",
-    //     "publish_year": 2007,
-    //     "publisher": "Knopf Books for Young Readers",
-    //     "cover_pic": "https://coverart.oclc.org/ImageWebSvc/oclc/+-+38434540_140.jpg",
-    //     "qty_in_stock": 58,
-    //     "min_threshold": 10,
-    //     "buy_price": 10,
-    //     "sell_price": 14,
-    //     "vendor_id": "60d5ec49f5ee3e2ddca25b01",
+    //     "_id": "6699711010ae969628557253",
+    //     "isbn": "978-1250214181",
+    //     "category": "Biography",
+    //     "title": "Becoming",
+    //     "author": "Michelle Obama",
+    //     "rating": 4.9,
+    //     "edition": "1st",
+    //     "publish_year": 2018,
+    //     "publisher": "Crown",
+    //     "cover_pic": "https://coverart.oclc.org/ImageWebSvc/oclc/+-+6708695856_140.jpg",
+    //     "qty_in_stock": 19,
+    //     "min_threshold": 15,
+    //     "buy_price": 15,
+    //     "sell_price": 25,
+    //     "vendor_id": "60d5ec49f5ee3e2ddca25b04",
     //     "__v": 0
     // }
+
+    console.log(bookData, gradient)
+    
     return (
 
-        <div className="bookContainerSmall" onClick={e => navigate(`/product/${bookData.ISBN}`)}>
+        <div className="bookContainerSmall" onClick={e => navigate(`/product/${bookData.isbn}`)}>
             <div style={{backgroundImage: `url("${gradient}")`}} className="bookImageWrapper">
                 <img src={bookData.cover_pic} alt="" />
             </div>
