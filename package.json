@@ -8,7 +8,7 @@
     "client": "npm start --prefix client",
     "dev": "npm run populate && concurrently \"npm run server\" \"npm run client\"",
     "server": "nodemon server.js",
-    "populate": "node scripts/addDummyData.js"
+    "populate": "node ./db/scripts/addDummyData.js"
   },
   "keywords": [],
   "author": "",
