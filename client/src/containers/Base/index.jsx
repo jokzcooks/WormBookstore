@@ -12,6 +12,7 @@ import Cart from '../../components/Cart';
 import AdminPage from '../Admin/AdminPage';
 import CheckoutPage from '../Checkout/index'; // Ensure this path is correct
 import ConfirmRegistration from '../ConfirmRegistration';
+import {ErrorMessage} from '../../components/Issue';
 
 const Base = () => {
   const navigate = useNavigate();
@@ -108,6 +109,8 @@ const Base = () => {
           <p onClick={e => navigate("/receipt")}>-/receipt</p>
           <p onClick={e => navigate("/product/978-0743273565")}>-/product/:id</p> */}
         </div>
+
+        <ErrorMessage onMount={onErrorMount}/>
     </div>
   );
 }

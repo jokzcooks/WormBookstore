@@ -22,6 +22,9 @@
   --accent_A: #EFDDD3;
   --accent_B: #C7B0AF;
   --dark: #393A3B;
+  --red: rgba(255, 100, 100, 1);
+  --red-opac: rgba(255, 100, 100, 0.25);
+  --red-darker: rgba(78, 42, 53, 1);
 }
 
 html, body {
@@ -62,6 +65,34 @@ h1 {
   position: relative;
   background-color: var(--light);
   color: var(--dark);
+}
+
+
+.errorBox {
+  height: 40px;
+  width: fit-content;
+  top: -100%;
+  transition: all 500ms ease-in-out;
+  background-color: var(--red-opac);
+  position: absolute;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  gap: 20px;
+  margin-left: auto;
+  margin-right: auto;
+  left: 0;
+  right: 0;
+  border-radius: 5px;
+}
+.errorBox > img {
+  height: 20px;
+}
+
+.errorBox > p{
+  color: var(--red);
 }
 
 .mainContainer {
