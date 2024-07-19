@@ -21,7 +21,7 @@ const LoginPage = ({login}) => {
 
     const tryLogin = () => {
         login()
-        if (returnTo) navigate(returnTo)
+        // if (returnTo) navigate(returnTo)
     }
 
     return (
