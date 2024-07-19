@@ -74,7 +74,7 @@ const ProfilePage = ({ logOut , userData, setUserData}) => {
                         <div className="profileSettingsContainer">
                             <h4 style={{marginBottom: "0px"}}>Personal Info</h4>
                             <p>Name</p>
-                            <input type="text" disabled={!editMode ? "disabled" : ""} value={userDetails.name} onChange={e => setUserDetails({...userData, name: e.target.value})}/>
+                            <input type="text" disabled={"disabled"} value={`${userDetails.first_name} ${userDetails.last_name}`} onChange={e => setUserDetails({...userData, name: e.target.value})}/>
                             <p>Email</p>
                             <input type="email" disabled={!editMode ? "disabled" : ""} value={userDetails.email} onChange={e => setUserDetails({...userData, email: e.target.value})} />
                             <p>Password</p>
