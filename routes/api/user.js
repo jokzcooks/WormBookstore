@@ -3,12 +3,9 @@ const router = express.Router();
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { sendEmail } = require('../../emailService');
-
-
-
-const { User } = require('../../db/models/User');
-
-
+const { User, Customer } = require('../../db/models/User'); // Adjust the path according to your file structure
+const { default: mongoose } = require('mongoose');
+const { v4: uuidv4 } = require('uuid');
 // @route   PUT api/user/editProfile
 // Update user profile
 router.put('/editProfile', async (req, res) => {
@@ -47,15 +44,23 @@ router.put('/editProfile', async (req, res) => {
 });
 
 
-// @route   POST api/users/register
+// @route   POST api/user/register
 // Register a new user
 router.post('/register', async (req, res) => {
-  const { username, password, email } = req.body;
+  var { first_name, last_name, password, email } = req.body;
 
   // Validate inputs
-  if (!username || !password || !email) {
+  if (!first_name || !last_name || !password || !email) {
       return res.status(400).json({ message: 'All fields are required.' });
   }
+
+  email = (() => {
+    var [user, domain] = email.toLowerCase().split("@")
+    user = user.replace(/\./mg, "")
+    return `${user}@${domain}`
+  })()
+  console.log("/register POSTTT")
+  console.log({ first_name, last_name, password, email })
 
   try {
       // Check for existing user
@@ -69,13 +74,14 @@ router.post('/register', async (req, res) => {
       const hashedPassword = await bcrypt.hash(password, salt);
 
       // Save user to database
-      const newUser = new User({
-          username,
+      const newUser = new Customer({
+          user_id: new mongoose.Types.ObjectId(),
+          first_name,
+          last_name,
           password: hashedPassword,
           email
       });
-
-      await newUser.save();
+      await newUser.save()
       res.status(201).json({ message: 'User registered successfully.' });
   } catch (error) {
       console.error(error);
