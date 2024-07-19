@@ -480,16 +480,47 @@ h1 {
   margin-top: 5px;
 }
 
-.profileContainer, .checkoutPage, .adminPage {
+.profileContainer, .checkoutPage, .adminPage, .confirmReg {
   width: 100vw;
   height: 100vh;
   padding: 15vh 10vw;
 }
 
+.loginPage {
+  padding: 10vh 0vw !important;
+}
+
 .profileContainer > div,
-.checkoutPage > div {
+.checkoutPage > div,
+.confirmReg > div {
   display: flex;
   flex-flow: column;
+}
+
+.confirmReg { 
+  display: flex;
+  justify-content: center;
+}
+
+.confirmReg > div {
+  text-align: center;
+}
+
+.confirmReg > div > form {
+  width: 20vw;
+  align-items: center;
+}
+
+.confirmReg > div > form > input {
+  width: 210px;
+  font-size: 40px;
+  letter-spacing: 10px;
+  padding: 10px;
+  margin: 0;
+  background-color: #fff;
+  border: 0;
+  border-radius: 5px;
+  border: 1px solid grey;
 }
 
 .adminPage > .profileSettingsGroups {
@@ -628,8 +659,8 @@ h1 {
   justify-content: center;
   border-radius: 10px;
   overflow: hidden;
-  padding: 25px;
-  gap: 10px;
+  padding: 20px;
+  gap: 5px;
 }
 
 .loginPage > .chokeLogin > .title {
@@ -660,14 +691,23 @@ h1 {
 }
 
 .loginPage > .chokeLogin > .label,
-.loginPage > .chokeLogin > .fullName > div > .label {
+.loginPage > .chokeLogin > .fullName > div > .label,
+.confirmReg > div > form > .label {
   margin: 0;
   margin-top: 10px;
 }
 
 .loginPage > .chokeLogin > .label > span,
-.loginPage > .chokeLogin > div > div > .label > span {
+.loginPage > .chokeLogin > div > div > .label > span,
+.confirmReg > div > form > .label > span {
   color: red;
+}
+
+.confirmReg > div > form {
+  display: flex;
+  flex-flow: column nowrap;
+  gap: 10px;
+  width: 100%;
 }
 
 .loginPage > .chokeLogin > .fullName {
@@ -686,9 +726,10 @@ h1 {
 }
 
 .loginPage > .chokeLogin > input,
-.loginPage > .chokeLogin > div > div > input {
+.loginPage > .chokeLogin > div > div > input{
   margin: 0;
   height: 40px;
+  min-height: 40px;
   width: 100%;
   background-color: #fff;
   border: 0;
@@ -700,6 +741,7 @@ h1 {
 .login {
   margin: 0;
   height: 40px;
+  min-height: 40px;
   background-color: #E4F5FF;
   border: 0;
   border-radius: 5px;
