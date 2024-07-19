@@ -47,7 +47,7 @@ userSchema.pre('save', async function(next) {
 });
 
 const customerSchema = new Schema({
-  phone: { type: String, required: false },
+  phone: { type: String, required: true },
   address: addressSchema, // Embedded address
   payment_cards: {  // Embedded array of payment cards
     type: [payCardSchema],
@@ -61,7 +61,7 @@ const customerSchema = new Schema({
     default: 'inactive'
   },
   subscribed: { type: Boolean, default: false },
-  verif_code: String
+  verif_code: { type: String, required: true}
 });
 
 const adminSchema = new Schema({
