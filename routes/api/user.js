@@ -6,6 +6,20 @@ const { sendEmail } = require('../../emailService');
 const { User, Customer } = require('../../db/models/User'); // Adjust the path according to your file structure
 const { default: mongoose } = require('mongoose');
 const { v4: uuidv4 } = require('uuid');
+
+function emailCodeGen() {
+    var nums = '0123456790'.split('')
+    var rand = (list) => list[Math.floor(Math.random() * list.length)]
+    return [
+        rand(nums),
+        rand(nums),
+        rand(nums),
+        rand(nums),
+        rand(nums),
+        rand(nums),
+    ].join("")
+}
+
 // @route   PUT api/user/editProfile
 // Update user profile
 router.put('/editProfile', async (req, res) => {
@@ -47,7 +61,7 @@ router.put('/editProfile', async (req, res) => {
 // @route   POST api/user/register
 // Register a new user
 router.post('/register', async (req, res) => {
-  var { first_name, last_name, password, email } = req.body;
+  var { first_name, last_name, password, email, phoneNumber } = req.body;
 
   // Validate inputs
   if (!first_name || !last_name || !password || !email) {
@@ -60,7 +74,7 @@ router.post('/register', async (req, res) => {
     return `${user}@${domain}`
   })()
   console.log("/register POSTTT")
-  console.log({ first_name, last_name, password, email })
+  console.log({ first_name, last_name, email, phoneNumber, password })
 
   try {
       // Check for existing user
@@ -73,16 +87,73 @@ router.post('/register', async (req, res) => {
       const salt = await bcrypt.genSalt(10);
       const hashedPassword = await bcrypt.hash(password, salt);
 
+      // Send confirmation email
+      const comfCode = emailCodeGen()
+      sendEmail(email, `Confirm Your Registration for Worm!`, `Thank you for registering for worm!\n\nHere is your six digit confirmation code:\n${comfCode}`)
+
       // Save user to database
       const newUser = new Customer({
           user_id: new mongoose.Types.ObjectId(),
           first_name,
           last_name,
+          email,
+          phone: phoneNumber,
           password: hashedPassword,
-          email
+          verif_code: comfCode
       });
       await newUser.save()
-      res.status(201).json({ message: 'User registered successfully.' });
+      var exposedUser = JSON.parse(JSON.stringify(newUser))
+      delete exposedUser.password
+      delete exposedUser.verif_code
+      delete exposedUser.__v
+      delete exposedUser._id
+      res.status(201).json({ message: 'User registered successfully.', data: exposedUser});
+  } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Server error.' });
+  }
+});
+
+// @route   POST api/user/confirm
+// Confirm a user's registration
+router.post('/confirm', async (req, res) => {
+  var { email, comf_code } = req.body;
+
+  console.log("Confirming!", email, comf_code)
+
+  // Validate inputs
+  if (!comf_code) {
+      return res.status(400).json({ message: 'All fields are required.' });
+  }
+
+  try {
+      // Check for existing user
+      const existingUser = await User.findOne({ email });
+      if (!existingUser) {
+          console.log("User doesn't exist")
+          return res.status(400).json({ message: "User doesn't exist!" });
+      }
+
+      if (existingUser.verif_code != comf_code) {
+        console.log("Code invalid")
+        return res.status(400).json({ message: "Invalid code!" });
+      }
+
+      console.log("Code is valid!!")
+
+      const updatedUser = await Customer.findOneAndUpdate({email: email}, {status: "active"}, {
+        new: true
+      })
+
+      console.log("user updated!", updatedUser)
+
+      var exposedUser = JSON.parse(JSON.stringify(updatedUser))
+      delete exposedUser.password
+      delete exposedUser.verif_code
+      delete exposedUser.__v
+      delete exposedUser._id
+      console.log("Duplicated user", exposedUser)
+      res.status(201).json({ message: 'User confirmed successfully.', data: exposedUser});
   } catch (error) {
       console.error(error);
       res.status(500).json({ message: 'Server error.' });
