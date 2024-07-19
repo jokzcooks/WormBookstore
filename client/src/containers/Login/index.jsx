@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
-const LoginPage = ({login}) => {
+const LoginPage = ({login, forgot}) => {
 
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
@@ -20,8 +20,15 @@ const LoginPage = ({login}) => {
     }
 
     const tryLogin = () => {
-        login()
-        // if (returnTo) navigate(returnTo)
+        const res = login(email, password, true)
+        if (res == true) {
+            if (returnTo) navigate(returnTo)
+        }
+    }
+
+    const forgotPassword = () => {
+        console.log("Callign forgot password!", forgot)
+        forgot(email)
     }
 
     return (
@@ -37,7 +44,9 @@ const LoginPage = ({login}) => {
                 <input value={email} onChange={e => setEmail(e.target.value)} type="text" name="" id="" placeholder="bookworm@gmail.com" />
                 <p className="label">Password <span>*</span></p>
                 <input value={password} onChange={e => setPassword(e.target.value)} type="password" name="" id="" placeholder="Password" />
-                <button onClick={e => tryLogin()} className="login">Log In</button><span onClick={e => register()} className="create">or Create Account</span>
+                <button onClick={e => tryLogin()} className="login">Log In</button>
+                <span onClick={e => register()} className="create">or Create Account</span>
+                <span style={{color: "grey"}} onClick={e => forgotPassword()} className="create">Forgot Password?</span>
             </div>
         </div>
     )

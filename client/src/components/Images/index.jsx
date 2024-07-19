@@ -24,6 +24,10 @@ export {
     default as ErrorIcon
 }
 from './icons/issue.svg'
+export {
+    default as SuccessIcon
+}
+from './icons/success.svg'
 
 export const Gradients = [
     Gradient1,

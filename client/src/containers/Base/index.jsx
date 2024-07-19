@@ -12,7 +12,8 @@ import Cart from '../../components/Cart';
 import AdminPage from '../Admin/AdminPage';
 import CheckoutPage from '../Checkout/index'; // Ensure this path is correct
 import ConfirmRegistration from '../ConfirmRegistration';
-import {ErrorMessage} from '../../components/Issue';
+import { ErrorMessage } from '../../components/Notification/errorMessage';
+import { SuccessMessage } from '../../components/Notification/successMessage';
 
 const Base = () => {
   const navigate = useNavigate();
@@ -81,10 +82,29 @@ const Base = () => {
     }
   }
 
-  const handleLogIn = () => {
-
-
-
+  const handleLogIn = async (email, password, rememberMe) => {
+    console.log("logging in", email, password, rememberMe)
+    const res = await fetch("http://localhost:5000/api/user/login", {
+      method: "POST",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        email,
+        password,
+        rememberMe
+      })
+    })
+    const body = await res.json()
+    console.log(body)
+    if (res.status >= 400) {
+      setError(body.message)
+      return false
+    } else {
+      setProfileData({...profileData, ...body.data, password})
+      return true
+    }
 
     // setProfileData({
     //   name: "John Smith",
@@ -99,6 +119,29 @@ const Base = () => {
     //   cardCVV: "123",
     //   cardExp: "2029-02",
     // })
+  }
+
+  const handleForgotPassword = async (email) => {
+    if (!email || email == "") return setError("An email is required!")
+    const res = await fetch("http://localhost:5000/api/user/forgot", {
+        method: "POST",
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          email,
+        })
+      })
+      const body = await res.json()
+      console.log(body)
+      if (res.status >= 400) {
+        setError(body.message)
+        return false
+      } else {
+        setSuccess("Successfully sent temporary password!")
+        return true
+      }
   }
 
   const handleRegister = async (firstName, lastName, email, phoneNumber, password) => {
@@ -156,6 +199,9 @@ const Base = () => {
   let setError = null;
   const onErrorMount = (data) => setError = data[1];
 
+  let setSuccess = null;
+  const onSuccessMount = (data) => setSuccess = data[1];
+
   return (
     <div className='mainContainer'>
         <Header toggleCartOpen={() => {cartOpen ? setCartOpen(false) : setCartOpen(true)}} />
@@ -164,7 +210,7 @@ const Base = () => {
             <Route path='/profile' element={<ProfilePage userData={profileData} setUserData={data => setProfileData(data)}/>} />
             <Route path='/search' element={<SearchPage/>} />
             <Route path='/search/:searchTerm' element={<SearchPage/>} />
-            <Route path='/login' element={<LoginPage login={() => handleLogIn()}/>} />
+            <Route path='/login' element={<LoginPage login={(email, password, rememberMe) => handleLogIn(email, password, rememberMe)} forgot={(email) => handleForgotPassword(email)}/>} />
             <Route path='/register' element={<RegisterPage register={(firstName, lastName, email, phoneNumber, password) => handleRegister(firstName, lastName, email, phoneNumber, password)}/>} />
             <Route path='/confirmReg' element={<ConfirmRegistration tryConfirm={code => confirmRegistrationCode(code)}/>} />
             <Route path='/receipt' element={<ReceiptPage cartItems={userCart}/>} />
@@ -187,6 +233,7 @@ const Base = () => {
         </div>
 
         <ErrorMessage onMount={onErrorMount}/>
+        <SuccessMessage onMount={onSuccessMount}/>
     </div>
   );
 }

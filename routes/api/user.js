@@ -20,6 +20,16 @@ function emailCodeGen() {
     ].join("")
 }
 
+function generatePassword() {
+  var length = 16,
+      charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789",
+      retVal = "";
+  for (var i = 0, n = charset.length; i < length; ++i) {
+      retVal += charset.charAt(Math.floor(Math.random() * n));
+  }
+  return retVal;
+}
+
 // @route   PUT api/user/editProfile
 // Update user profile
 router.put('/editProfile', async (req, res) => {
@@ -160,6 +170,40 @@ router.post('/confirm', async (req, res) => {
   }
 });
 
+
+// @route   POST api/user/reset
+// Reset a user's password
+router.post('/forgot', async (req, res) => {
+  var { email } = req.body;
+
+  console.log("Resetting!", email)
+
+  try {
+      // Check for existing user
+      const existingUser = await User.findOne({ email });
+      if (!existingUser) {
+          console.log("User doesn't exist")
+          return res.status(400).json({ message: "User doesn't exist!" });
+      }
+
+      console.log("Code is valid!!")
+
+      const newPassword = generatePassword()
+      
+      // Hash the password
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+
+      await Customer.findOneAndUpdate({email: email}, {password: hashedPassword})
+      sendEmail(email, `Worm Temporary Password`, `Here is your temporary password:\n${newPassword}`)
+      res.status(201).json({ message: 'Password reset successfully!'});
+  } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Server error.' });
+  }
+});
+
 // @route   POST api/user/login
 // Log in a user
 router.post('/login', async (req, res) => {
@@ -202,8 +246,16 @@ router.post('/login', async (req, res) => {
       jwt.sign(payload, process.env.JWT_SECRET, jwtOptions, (err, token) => {
           if (err) throw err;
           res.json({ token });
+          res.cookie("token", token.toString())
       });
 
+      var exposedUser = JSON.parse(JSON.stringify(user))
+      delete exposedUser.password
+      delete exposedUser.verif_code
+      delete exposedUser.__v
+      delete exposedUser._id
+      console.log("Duplicated user", exposedUser)
+      res.status(201).json({ message: 'User confirmed successfully.', data: exposedUser});
   } catch (error) {
       console.error(error);
       res.status(500).json({ message: 'Server error.' });
