@@ -6,16 +6,16 @@ const ConfirmRegistration = ({}) => {
     const navigate = useNavigate()
     const location = useLocation()
 
-    useEffect(() => {
-        const returnTo = new URLSearchParams(location.search).get("returnTo");
-        setTimeout(() => {
-            if (returnTo) {
-                navigate(returnTo)
-            } else {
-                navigate("/")
-            }         
-        }, 3000);
-    }, [])
+    // useEffect(() => {
+    //     const returnTo = new URLSearchParams(location.search).get("returnTo");
+    //     setTimeout(() => {
+    //         if (returnTo) {
+    //             navigate(returnTo)
+    //         } else {
+    //             navigate("/")
+    //         }         
+    //     }, 3000);
+    // }, [])
     
 
     return (
