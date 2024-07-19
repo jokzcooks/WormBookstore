@@ -65,20 +65,52 @@ const Base = () => {
   }
 
   const handleLogIn = () => {
-    setProfileData({
-      name: "John Smith",
-      email: "john.smith@example.com",
-      password: "password123",
-      streetAddress: "1234 Apple St",
-      city: "Athens",
-      state: "GA",
-      zipCode: "30605",
-      cardName: "John Smith",
-      cardNumber: "5555 5544 5544 5544",
-      cardCVV: "123",
-      cardExp: "2029-02",
-    })
+
+
+
+
+    // setProfileData({
+    //   name: "John Smith",
+    //   email: "john.smith@example.com",
+    //   password: "password123",
+    //   streetAddress: "1234 Apple St",
+    //   city: "Athens",
+    //   state: "GA",
+    //   zipCode: "30605",
+    //   cardName: "John Smith",
+    //   cardNumber: "5555 5544 5544 5544",
+    //   cardCVV: "123",
+    //   cardExp: "2029-02",
+    // })
   }
+
+  const handleRegister = async (firstName, lastName, email, password) => {
+    console.log("Registering", firstName, lastName, email, password)
+    const res = await fetch("http://localhost:5000/api/user/register", {
+      method: "POST",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        first_name: firstName,
+        last_name: lastName,
+        email,
+        password
+      })
+    })
+    const body = await res.json()
+    console.log(body)
+    if (res.status >= 400) {
+      setError(body.message)
+      return false
+    } else {
+      return true
+    }
+  }
+
+  let setError = null;
+  const onErrorMount = (data) => setError = data[1];
 
   return (
     <div className='mainContainer'>
@@ -89,7 +121,7 @@ const Base = () => {
             <Route path='/search' element={<SearchPage/>} />
             <Route path='/search/:searchTerm' element={<SearchPage/>} />
             <Route path='/login' element={<LoginPage login={() => handleLogIn()}/>} />
-            <Route path='/register' element={<RegisterPage login={() => handleLogIn()}/>} />
+            <Route path='/register' element={<RegisterPage register={(firstName, lastName, email, password) => handleRegister(firstName, lastName, email, password)}/>} />
             <Route path='/confirmReg' element={<ConfirmRegistration/>} />
             <Route path='/receipt' element={<ReceiptPage cartItems={userCart}/>} />
             <Route path='/product/:id' element={<ProductPage openCart={() => setCartOpen(true)} addToCart={item => addItemToCart(item)} allBooks={catalog} />} />
