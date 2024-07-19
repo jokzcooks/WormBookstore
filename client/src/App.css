@@ -659,18 +659,37 @@ h1 {
   font-size: 12px;
 }
 
-.loginPage > .chokeLogin > .label {
+.loginPage > .chokeLogin > .label,
+.loginPage > .chokeLogin > .fullName > div > .label {
   margin: 0;
   margin-top: 10px;
 }
 
-.loginPage > .chokeLogin > .label > span {
+.loginPage > .chokeLogin > .label > span,
+.loginPage > .chokeLogin > div > div > .label > span {
   color: red;
 }
 
-.loginPage > .chokeLogin > input {
+.loginPage > .chokeLogin > .fullName {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+}
+
+.loginPage > .chokeLogin > .fullName > div {
+  width: 50%;
+  gap: 10px;
+  display: flex;
+  flex-flow: column;
+}
+
+.loginPage > .chokeLogin > input,
+.loginPage > .chokeLogin > div > div > input {
   margin: 0;
   height: 40px;
+  width: 100%;
   background-color: #fff;
   border: 0;
   border-radius: 5px;
