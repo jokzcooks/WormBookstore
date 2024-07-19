@@ -47,7 +47,7 @@ userSchema.pre('save', async function(next) {
 });
 
 const customerSchema = new Schema({
-  phone: { type: String, required: true },
+  phone: { type: String, required: false },
   address: addressSchema, // Embedded address
   payment_cards: {  // Embedded array of payment cards
     type: [payCardSchema],
@@ -73,5 +73,5 @@ const User = mongoose.model('user', userSchema);
 const Customer = User.discriminator('customer', customerSchema);
 const Admin = User.discriminator('admin', adminSchema);
 
-module.exports = { Customer, Admin };
+module.exports = { User, Customer, Admin };
 
