@@ -20,6 +20,10 @@ export {
     default as HeroIcon
 }
 from './icons/books.svg';
+export {
+    default as ErrorIcon
+}
+from './icons/issue.svg'
 
 export const Gradients = [
     Gradient1,
