@@ -48,8 +48,11 @@ const ProfilePage = ({ logOut , userData, setUserData}) => {
     const [userDetails, setUserDetails] = useState(userData);
 
     useEffect(() => {
-        if (!userData) {
-            navigate("/login?returnTo=/profile");
+        if (!userData || userData.email == "") {
+            return navigate("/login?returnTo=/profile");
+        }
+        if (userData.status == "inactive") {
+            return navigate("/confirmReg?returnTo=/profile")
         }
     }, [userData]);
 
