@@ -26,8 +26,25 @@ const Base = () => {
 
   const [userCart, setUserCart] = useState([]);
     // Mock user data to simulate logged-in user
-  const [profileData, setProfileData] = useState();
+  const [profileData, setProfileData] = useState({
+      first_name: "",
+      last_name: "",
+      email: "",
+      phone: "",
+      password: "",
+      streetAddress: "",
+      city: "",
+      state: "",
+      zipCode: "",
+      payment_cards: [{
+        cardName: "",
+        cardNumber: "",
+        cardCVV: "",
+        cardExp: ""
+      }]
+  });
   console.log("userCart", userCart)
+  console.log("profileData", profileData)
 
   const getBooks = useCallback(() => {
     fetch('http://localhost:5000/api/book')
@@ -84,8 +101,8 @@ const Base = () => {
     // })
   }
 
-  const handleRegister = async (firstName, lastName, email, password) => {
-    console.log("Registering", firstName, lastName, email, password)
+  const handleRegister = async (firstName, lastName, email, phoneNumber, password) => {
+    console.log("Registering", firstName, lastName, email, phoneNumber, password)
     const res = await fetch("http://localhost:5000/api/user/register", {
       method: "POST",
       headers: {
@@ -96,6 +113,7 @@ const Base = () => {
         first_name: firstName,
         last_name: lastName,
         email,
+        phoneNumber,
         password
       })
     })
@@ -105,8 +123,34 @@ const Base = () => {
       setError(body.message)
       return false
     } else {
+      setProfileData({...profileData, ...body.data, password})
       return true
     }
+  }
+
+  const confirmRegistrationCode = async (code) => {
+    console.log("confirming", code)
+    const res = await fetch("http://localhost:5000/api/user/confirm", {
+      method: "POST",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        email: profileData.email,
+        comf_code: code
+      })
+    })
+    const body = await res.json()
+    console.log(body)
+    if (res.status >= 400) {
+      setError(body.message)
+      return false
+    } else {
+      setProfileData({...profileData, ...body.data})
+      return true
+    }
+
   }
 
   let setError = null;
@@ -121,8 +165,8 @@ const Base = () => {
             <Route path='/search' element={<SearchPage/>} />
             <Route path='/search/:searchTerm' element={<SearchPage/>} />
             <Route path='/login' element={<LoginPage login={() => handleLogIn()}/>} />
-            <Route path='/register' element={<RegisterPage register={(firstName, lastName, email, password) => handleRegister(firstName, lastName, email, password)}/>} />
-            <Route path='/confirmReg' element={<ConfirmRegistration/>} />
+            <Route path='/register' element={<RegisterPage register={(firstName, lastName, email, phoneNumber, password) => handleRegister(firstName, lastName, email, phoneNumber, password)}/>} />
+            <Route path='/confirmReg' element={<ConfirmRegistration tryConfirm={code => confirmRegistrationCode(code)}/>} />
             <Route path='/receipt' element={<ReceiptPage cartItems={userCart}/>} />
             <Route path='/product/:id' element={<ProductPage openCart={() => setCartOpen(true)} addToCart={item => addItemToCart(item)} allBooks={catalog} />} />
             <Route path='/admin/*' element={<AdminPage />} /> {/* doesnt work */}
