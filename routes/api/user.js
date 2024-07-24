@@ -129,6 +129,12 @@ router.post('/register', async (req, res) => {
 router.post('/confirm', async (req, res) => {
   var { email, comf_code } = req.body;
 
+  email = (() => {
+    var [user, domain] = email.toLowerCase().split("@")
+    user = user.replace(/\./mg, "")
+    return `${user}@${domain}`
+  })()
+
   console.log("Confirming!", email, comf_code)
 
   // Validate inputs
@@ -209,11 +215,21 @@ router.post('/forgot', async (req, res) => {
 router.post('/login', async (req, res) => {
   const { email, password, rememberMe } = req.body;
 
+  // Validate inputs
+  if (!email || !password || !rememberMe) {
+    return res.status(400).json({ message: 'All fields are required.' });
+  }
+
+  email = (() => {
+    var [user, domain] = email.toLowerCase().split("@")
+    user = user.replace(/\./mg, "")
+    return `${user}@${domain}`
+  })()
+
+  console.log("/login POSTTT")
+  console.log({ email, password, rememberMe })
+
   try {
-      // Validate user inputs
-      if (!email || !password) {
-          return res.status(400).json({ message: 'Please provide both email and password.' });
-      }
 
       // Check for existing user
       const user = await User.findOne({ email });
