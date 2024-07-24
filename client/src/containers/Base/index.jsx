@@ -64,7 +64,7 @@ const Base = () => {
   });
   useEffect(() => {
     if (location.pathname === '/') {
-      navigate("/home"); // Navigate to home only if on the root path
+      navigate("/home");
     }
     getBooks();
     getFeatured();
@@ -100,13 +100,14 @@ const Base = () => {
     console.log(body)
     if (res.status >= 400) {
       setError(body.message)
+      console.log("Login failed, profileData:")
       return false
     } else {
       setProfileData({...profileData, ...body.data, password})
       return true
     }
 
-    // setProfileData({
+    // setProfsileData({
     //   name: "John Smith",
     //   email: "john.smith@example.com",
     //   password: "password123",
@@ -167,8 +168,30 @@ const Base = () => {
       return false
     } else {
       setProfileData({...profileData, ...body.data, password})
-      return true
+      navigate("/confirmReg")
     }
+  }
+
+  const logOut = async () => {
+    setProfileData({
+      first_name: "",
+      last_name: "",
+      email: "",
+      phone: "",
+      password: "",
+      streetAddress: "",
+      city: "",
+      state: "",
+      zipCode: "",
+      payment_cards: [{
+        cardName: "",
+        cardNumber: "",
+        cardCVV: "",
+        cardExp: ""
+      }]
+  })
+  setUserCart([])
+
   }
 
   const confirmRegistrationCode = async (code) => {
@@ -207,7 +230,7 @@ const Base = () => {
         <Header toggleCartOpen={() => {cartOpen ? setCartOpen(false) : setCartOpen(true)}} />
         <Routes>
             <Route path='/home' element={<HomePage catalog={catalog} featured={featured} coming={coming} position="home"/>} />
-            <Route path='/profile' element={<ProfilePage userData={profileData} setUserData={data => setProfileData(data)}/>} />
+            <Route path='/profile' element={<ProfilePage logOut={() => logOut()} userData={profileData} setUserData={data => setProfileData(data)}/>} />
             <Route path='/search' element={<SearchPage/>} />
             <Route path='/search/:searchTerm' element={<SearchPage/>} />
             <Route path='/login' element={<LoginPage login={(email, password, rememberMe) => handleLogIn(email, password, rememberMe)} forgot={(email) => handleForgotPassword(email)}/>} />

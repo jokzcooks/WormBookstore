@@ -17,7 +17,6 @@ const RegisterPage = ({register}) => {
     const createAccount = async () => {
         console.log("Creating account!", firstName, lastName, email, phoneNumber, password)
         const res = await register(firstName, lastName, email, phoneNumber, password)
-        if (res == true) navigate(`/confirmReg${returnTo ? "?returnTo=" + returnTo : ""}`)
     }
 
     const applyPhonePattern = (val) => {

@@ -19,10 +19,15 @@ const LoginPage = ({login, forgot}) => {
         }
     }
 
-    const tryLogin = () => {
-        const res = login(email, password, true)
+    const tryLogin = async () => {
+        const res = await login(email, password, true)
+        console.log(res)
         if (res == true) {
-            if (returnTo) navigate(returnTo)
+            if (returnTo) {
+                navigate(returnTo)
+            } else {
+            navigate("/home")
+            }
         }
     }
 
