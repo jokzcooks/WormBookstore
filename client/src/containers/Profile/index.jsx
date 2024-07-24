@@ -103,7 +103,10 @@ const ProfilePage = ({ logOut , userData, setUserData}) => {
                             <input type="month" disabled={!editMode ? "disabled" : ""} value={userDetails.cardExp} onChange={e => setUserDetails({...userData, cardExp: e.target.value})} />
                         </div>
                     </div>
-                    <button className="editProfile" onClick={e => toggleEditMode()}>{editMode ? "Save Profile" : "Edit Profile"}</button>
+                    <div className="profileButtons">
+                        <button className="editProfile" onClick={e => logOut()}>Log Out</button>
+                        <button className="editProfile" onClick={e => toggleEditMode()}>{editMode ? "Save Profile" : "Edit Profile"}</button>
+                    </div>
                 </div>
             ) : (
                 <div>
