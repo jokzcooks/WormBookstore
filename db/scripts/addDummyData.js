@@ -17,6 +17,10 @@ const vendors = require('../dummy_data/dummyVendors');
 const employees = require('../dummy_data/dummyEmployees');
 
 const mongoDB = process.env.MONGO_URL;
+
+// Log the MongoDB URI to confirm it is being read correctly
+console.log('MongoDB URI:', mongoDB);
+
 mongoose.connect(mongoDB)
   .then(async () => {
     console.log('MongoDB connected...');

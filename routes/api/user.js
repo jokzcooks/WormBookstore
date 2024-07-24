@@ -121,8 +121,12 @@ router.post('/register', async (req, res) => {
       delete exposedUser.verif_code
       delete exposedUser.__v
       delete exposedUser._id
-      res.status(201).json({ message: 'User registered successfully.', data: exposedUser});
-  } catch (error) {
+      res.status(201).json({ 
+        message: 'User registered successfully.', 
+        data: exposedUser, 
+        redirectUrl: '/confirm-registration' 
+    });
+      } catch (error) {
       console.error(error);
       res.status(500).json({ message: 'Server error.' });
   }
