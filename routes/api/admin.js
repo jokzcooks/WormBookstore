@@ -1,10 +1,11 @@
 const express = require('express');
 const router = express.Router();
-const { Admin } = require('../../db/models/User'); // Adjust the path according to your file structure
+const { User, Admin } = require('../../db/models/User'); // Adjust the path according to your file structure
+const { isLoggedIn, isAdmin } = require('../../middleware/auth'); // Adjust the path according to your file structure
 
 // @route   POST api/admin
 // Create a new admin
-router.post('/', async (req, res) => {
+router.post('/', isLoggedIn, isAdmin, async (req, res) => {
   const admin = new Admin({
     ...req.body
   });
@@ -19,7 +20,7 @@ router.post('/', async (req, res) => {
 
 // @route   GET api/admin
 // Get all admins
-router.get('/', async (req, res) => {
+router.get('/', isLoggedIn, isAdmin, async (req, res) => {
   try {
     const admins = await Admin.find();
     res.json(admins);
@@ -30,7 +31,7 @@ router.get('/', async (req, res) => {
 
 // @route   GET api/admin/:id
 // Get admin by ID
-router.get('/:id', async (req, res) => {
+router.get('/:id', isLoggedIn, isAdmin, async (req, res) => {
   try {
     const admin = await Admin.findById(req.params.id);
     if (!admin) {
@@ -44,7 +45,7 @@ router.get('/:id', async (req, res) => {
 
 // @route   PUT api/admin/:id
 // Update an admin
-router.put('/:id', async (req, res) => {
+router.put('/:id', isLoggedIn, isAdmin, async (req, res) => {
   try {
     const updatedAdmin = await Admin.findByIdAndUpdate(
       req.params.id,
@@ -62,7 +63,7 @@ router.put('/:id', async (req, res) => {
 
 // @route   DELETE api/admin/:id
 // Delete an admin
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', isLoggedIn, isAdmin, async (req, res) => {
   try {
     const admin = await Admin.findByIdAndDelete(req.params.id);
     if (!admin) {
@@ -71,6 +72,42 @@ router.delete('/:id', async (req, res) => {
     res.json({ message: 'Deleted admin' });
   } catch (err) {
     res.status(500).json({ message: err.message });
+  }
+});
+
+// @route   PUT api/admin/suspend/:id
+// Suspend a user
+router.put('/suspend/:id', isLoggedIn, isAdmin, async (req, res) => {
+  try {
+    const updatedUser = await User.findByIdAndUpdate(
+      req.params.id,
+      { status: 'suspended' },
+      { new: true, runValidators: true }
+    );
+    if (!updatedUser) {
+      return res.status(404).json({ message: 'Cannot find user' });
+    }
+    res.json({ message: 'User suspended successfully', user: updatedUser });
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+});
+
+// @route   PUT api/admin/unsuspend/:id
+// Unsuspend a user
+router.put('/unsuspend/:id', isLoggedIn, isAdmin, async (req, res) => {
+  try {
+    const updatedUser = await User.findByIdAndUpdate(
+      req.params.id,
+      { status: 'active' },
+      { new: true, runValidators: true }
+    );
+    if (!updatedUser) {
+      return res.status(404).json({ message: 'Cannot find user' });
+    }
+    res.json({ message: 'User unsuspended successfully', user: updatedUser });
+  } catch (err) {
+    res.status(400).json({ message: err.message });
   }
 });
 
