@@ -1,3 +1,4 @@
+
 const express = require('express');
 const router = express.Router();
 const Promotion = require('../../db/models/Promotion'); 
@@ -83,6 +84,33 @@ router.delete('/:id', async (req, res) => {
       return res.status(404).json({ message: 'Cannot find promotion' });
     }
     res.json({ message: 'Deleted promotion' });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+// @route   POST api/promotion/apply
+// Apply a promotion code to the cart total
+// This receives promo code and cart total, checks if code is valid, and returns new total after applying the discount
+router.post('/apply', async (req, res) => {
+  const { promo_code, cart_total } = req.body;
+
+  try {
+    const promotion = await Promotion.findOne({ promo_code });
+
+    if (!promotion) {
+      return res.status(404).json({ message: 'Invalid promotion code' });
+    }
+
+    const now = new Date();
+    if (now < promotion.start_date || now > promotion.end_date) {
+      return res.status(400).json({ message: 'Promotion code is not valid at this time' });
+    }
+
+    const discount = (cart_total * promotion.percentage) / 100;
+    const new_total = cart_total - discount;
+
+    res.json({ new_total });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
