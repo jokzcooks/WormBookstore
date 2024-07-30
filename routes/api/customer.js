@@ -74,4 +74,57 @@ router.delete('/:id', async (req, res) => {
   }
 });
 
+// @route   POST api/customer/:id/payment
+// Add or update payment information
+router.post('/:id/payment', async (req, res) => {
+  try {
+    const { type, number, expiry_date } = req.body;
+    const customer = await Customer.findById(req.params.id);
+
+    if (!customer) {
+      return res.status(404).json({ message: 'Cannot find customer' });
+    }
+
+    const cardIndex = customer.payment_cards.findIndex(card => card.number === number);
+
+    if (cardIndex >= 0) {
+      // Update existing card
+      customer.payment_cards[cardIndex].type = type;
+      customer.payment_cards[cardIndex].expiry_date = expiry_date;
+    } else {
+      // Add new card
+      if (customer.payment_cards.length >= 3) {
+        return res.status(400).json({ message: 'Payment card limit reached.' });
+      }
+      customer.payment_cards.push({ type, number, expiry_date });
+    }
+
+    await customer.save();
+    res.status(200).json(customer.payment_cards);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+});
+
+// @route   POST api/customer/:id/address
+// Add or update shipping address
+router.post('/:id/address', async (req, res) => {
+  try {
+    const { street, city, state, zip } = req.body;
+    const customer = await Customer.findById(req.params.id);
+
+    if (!customer) {
+      return res.status(404).json({ message: 'Cannot find customer' });
+    }
+
+    // Update address
+    customer.address = { street, city, state, zip };
+
+    await customer.save();
+    res.status(200).json(customer.address);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+});
+
 module.exports = router;
