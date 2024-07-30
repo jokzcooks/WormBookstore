@@ -5,16 +5,12 @@ const Book = require('../models/Book');
 const { Customer, Admin } = require('../models/User');
 const Order = require('../models/Order');
 const Promotion = require('../models/Promotion');
-const Vendor = require('../models/Vendor');
-const Employee = require('../models/Employee');
 
 const books = require('../dummy_data/dummyBooks');
 const admins = require('../dummy_data/dummyAdmins');
 const customers = require('../dummy_data/dummyCustomers');
 const orders = require('../dummy_data/dummyOrders');
 const promotions = require('../dummy_data/dummyPromotions');
-const vendors = require('../dummy_data/dummyVendors');
-const employees = require('../dummy_data/dummyEmployees');
 
 const mongoDB = process.env.MONGO_URL;
 mongoose.connect(mongoDB)
@@ -22,9 +18,7 @@ mongoose.connect(mongoDB)
     console.log('MongoDB connected...');
     await clearDatabase();
     await insertSamplePromotions();
-    await insertSampleEmployees();
-    await insertSampleVendors();
-    await insertSampleBooks(); // depends on vendor ids
+    await insertSampleBooks(); 
     await insertSampleUsers(); // dummy carts depend on book isbn
     await insertSampleOrders(); // depends on customer ids and book isbn
     mongoose.connection.close();
@@ -38,8 +32,6 @@ mongoose.connect(mongoDB)
       await Admin.deleteMany({});
       await Order.deleteMany({});
       await Promotion.deleteMany({});
-      await Vendor.deleteMany({});
-      await Employee.deleteMany({});
       console.log('Database cleared successfully');
     } catch (error) {
       console.error('Error clearing database:', error);
@@ -82,26 +74,4 @@ const insertSamplePromotions = async () => {
   } catch (error) {
     console.error('Error inserting sample promotions:', error);
   }
-}
-
-async function insertSampleVendors() {
-  try {
-    const result = await Vendor.insertMany(vendors);
-    console.log(`${result.length} sample vendors inserted successfully`);
-  } catch (error) {
-    console.error('Error inserting sample vendors:', error);
-  }
-}
-
-const insertSampleEmployees = async () => {
-  try {
-    const result = await Employee.insertMany(employees);
-    console.log(`${result.length} sample employees inserted successfully`);
-  } catch (error) {
-    console.error('Error inserting sample employees:', error);
-  }
 };
-
-
-
-

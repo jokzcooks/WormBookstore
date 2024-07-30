@@ -40,7 +40,6 @@ const customers = [
       total_price: 14.50
     },
     status: "active",
-    subscribed: true,
     verif_code: "abc123"
   },
   {
@@ -70,7 +69,6 @@ const customers = [
       }
     ],
     status: "inactive",
-    subscribed: false,
     verif_code: "def456"
   },
   {
@@ -95,7 +93,6 @@ const customers = [
       }
     ],
     status: "suspended",
-    subscribed: false,
     verif_code: "ghi789"
   },
   {
@@ -122,7 +119,6 @@ const customers = [
       total_price: 14.50
     },
     status: "active",
-    subscribed: true,
     verif_code: "jkl101"
   },
   {
@@ -146,7 +142,6 @@ const customers = [
     },
     phone: "555-1212",
     status: "inactive",
-    subscribed: false,
     verif_code: "mno202"
   }
 ];

@@ -41,7 +41,7 @@ router.get('/featured', async (req, res) => {
 });
 
 // @route   GET api/book/coming
-// Get 3 featured books
+// Get 3 upcoming books
 router.get('/coming', async (req, res) => {
   try {
     const comingSoonBooks = await Book.aggregate([{ $sample: { size: 3 } }]);
@@ -78,21 +78,6 @@ router.get('/:id', async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 });
-
-// @route   GET api/book/vendor/:vendor_id
-// Get all books for a vendor_id
-router.get('/vendor/:vendor_id', async (req, res) => {
-  try {
-    const books = await Book.find({ vendor_id: req.params.vendor_id });
-    if (books.length === 0) {
-      return res.status(404).json({ message: 'No books found for this vendor' });
-    }
-    res.json(books);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-});
-
 
 // @route   PUT api/book/:id
 // Update a book

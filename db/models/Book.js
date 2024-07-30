@@ -19,8 +19,7 @@ const bookSchema = new Schema({
   qty_in_stock: { type: Number, integer: true, required: true },
   min_threshold: { type: Number, integer: true },
   buy_price: { type: Number, required: true },
-  sell_price: { type: Number, required: true },
-  vendor_id: { type: Schema.Types.ObjectId, ref: 'Vendor' } // foreign key
+  sell_price: { type: Number, required: true }
 });
 
 const Book = mongoose.model('book', bookSchema);

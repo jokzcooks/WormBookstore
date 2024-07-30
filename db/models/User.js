@@ -60,7 +60,6 @@ const customerSchema = new Schema({
     enum: ['active', 'inactive', 'suspended'],
     default: 'inactive'
   },
-  subscribed: { type: Boolean, default: false },
   verif_code: { type: String, required: true}
 });
 

@@ -12,8 +12,6 @@ const admins = require('./routes/api/admin');
 const books = require('./routes/api/book');
 const orders = require('./routes/api/order');
 const promotions = require('./routes/api/promotion');
-const vendors = require('./routes/api/vendor');
-const employees = require('./routes/api/employee');
 const Book = require('./db/models/Book');
 
 const app = express();
@@ -38,8 +36,6 @@ app.use('/api/admin', admins);
 app.use('/api/book', books);
 app.use('/api/order', orders);
 app.use('/api/promotion', promotions);
-app.use('/api/vendor', vendors);
-app.use('/api/employee', employees);
 
 // Serve React app
 app.get('*', (req, res) => {
