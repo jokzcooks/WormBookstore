@@ -79,16 +79,17 @@ router.delete('/:id', isLoggedIn, isAdmin, async (req, res) => {
 // Suspend a user
 router.put('/suspend/:id', isLoggedIn, isAdmin, async (req, res) => {
   try {
-    const updatedUser = await User.findByIdAndUpdate(
-      req.params.id,
-      { status: 'suspended' },
-      { new: true, runValidators: true }
-    );
-    if (!updatedUser) {
+    console.log(`Suspend user request received for ID: ${req.params.id}`);
+    const user = await User.findById(req.params.id);
+    if (!user) {
       return res.status(404).json({ message: 'Cannot find user' });
     }
+    user.status = 'suspended';
+    const updatedUser = await user.save();
+    console.log(`User status after update: ${updatedUser.status}`);
     res.json({ message: 'User suspended successfully', user: updatedUser });
   } catch (err) {
+    console.error(`Error suspending user: ${err.message}`);
     res.status(400).json({ message: err.message });
   }
 });
@@ -97,16 +98,17 @@ router.put('/suspend/:id', isLoggedIn, isAdmin, async (req, res) => {
 // Unsuspend a user
 router.put('/unsuspend/:id', isLoggedIn, isAdmin, async (req, res) => {
   try {
-    const updatedUser = await User.findByIdAndUpdate(
-      req.params.id,
-      { status: 'active' },
-      { new: true, runValidators: true }
-    );
-    if (!updatedUser) {
+    console.log(`Unsuspend user request received for ID: ${req.params.id}`);
+    const user = await User.findById(req.params.id);
+    if (!user) {
       return res.status(404).json({ message: 'Cannot find user' });
     }
+    user.status = 'active';
+    const updatedUser = await user.save();
+    console.log(`User status after update: ${updatedUser.status}`);
     res.json({ message: 'User unsuspended successfully', user: updatedUser });
   } catch (err) {
+    console.error(`Error unsuspending user: ${err.message}`);
     res.status(400).json({ message: err.message });
   }
 });
