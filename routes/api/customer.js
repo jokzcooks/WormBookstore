@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const { Customer } = require('../../db/models/User'); // Adjust the path according to your file structure
+const bcrypt = require('bcrypt');
+const { Customer } = require('../../db/models/User'); 
 
 // @route   POST api/customer
 // Create a new customer
@@ -85,7 +86,10 @@ router.post('/:id/payment', async (req, res) => {
       return res.status(404).json({ message: 'Cannot find customer' });
     }
 
-    const cardIndex = customer.payment_cards.findIndex(card => card.number === number);
+    // Hash the card number
+    const hashedNumber = await bcrypt.hash(number, 10);
+
+    const cardIndex = customer.payment_cards.findIndex(card => card.number === hashedNumber);
 
     if (cardIndex >= 0) {
       // Update existing card
@@ -96,7 +100,7 @@ router.post('/:id/payment', async (req, res) => {
       if (customer.payment_cards.length >= 3) {
         return res.status(400).json({ message: 'Payment card limit reached.' });
       }
-      customer.payment_cards.push({ type, number, expiry_date });
+      customer.payment_cards.push({ type, number: hashedNumber, expiry_date });
     }
 
     await customer.save();

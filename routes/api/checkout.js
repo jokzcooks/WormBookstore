@@ -88,11 +88,11 @@ router.post('/', isLoggedIn, async (req, res) => {
           .status(400)
           .json({ message: 'Please provide a valid payment card.' });
       }
-      // Encrypt the new card number
-      const encryptedCardNumber = await encryptCardInfo(payment_card.number);
+      // Hash the card number
+      const hashedNumber = await bcrypt.hash(payment_card.number, 10);
       finalPaymentCard = {
         ...payment_card,
-        number: encryptedCardNumber
+        number: hashedNumber
       };
     } else {
       return res.status(400).json({ message: 'No payment card provided.' });

@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Order = require('../../db/models/Order'); 
+const { isLoggedIn } = require('../../middleware/auth');
 
 // @route   POST api/order
 // Create a new order
@@ -56,11 +57,11 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-// @route   GET api/order/customer/:customer_id
-// Get all orders for a specific customer_id
-router.get('/customer/:customer_id', async (req, res) => {
+// @route   GET api/order/customer
+// Get all orders for the logged-in customer
+router.get('/customer', isLoggedIn, async (req, res) => {
   try {
-    const orders = await Order.find({ customer_id: req.params.customer_id });
+    const orders = await Order.find({ customer_id: req.user._id });
     if (orders.length === 0) {
       return res.status(404).json({ message: 'No orders found for this customer' });
     }
