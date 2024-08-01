@@ -79,7 +79,7 @@ router.delete('/:id', async (req, res) => {
 // Add or update payment information
 router.post('/:id/payment', async (req, res) => {
   try {
-    const { type, number, expiry_date } = req.body;
+    const { type, number, expiry_date, card_index } = req.body;
     const customer = await Customer.findById(req.params.id);
 
     if (!customer) {
@@ -89,12 +89,11 @@ router.post('/:id/payment', async (req, res) => {
     // Hash the card number
     const hashedNumber = await bcrypt.hash(number, 10);
 
-    const cardIndex = customer.payment_cards.findIndex(card => card.number === hashedNumber);
-
-    if (cardIndex >= 0) {
+    if (typeof card_index === 'number' && card_index >= 0 && card_index < customer.payment_cards.length) {
       // Update existing card
-      customer.payment_cards[cardIndex].type = type;
-      customer.payment_cards[cardIndex].expiry_date = expiry_date;
+      customer.payment_cards[card_index].type = type;
+      customer.payment_cards[card_index].expiry_date = expiry_date;
+      customer.payment_cards[card_index].number = hashedNumber;
     } else {
       // Add new card
       if (customer.payment_cards.length >= 3) {
