@@ -1,262 +1,91 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import HomePage from '../Home';
 import ProfilePage from '../Profile';
 import Header from '../../components/Header';
 import SearchPage from '../Search';
-import LoginPage from './../Login/index';
-import RegisterPage from './../Register/index';
+import LoginPage from '../Login';
+import RegisterPage from '../Register';
 import ReceiptPage from '../Receipt';
 import ProductPage from '../Product';
 import Cart from '../../components/Cart';
 import AdminPage from '../Admin/AdminPage';
-import CheckoutPage from '../Checkout/index'; // Ensure this path is correct
+import CheckoutPage from '../Checkout';
 import ConfirmRegistration from '../ConfirmRegistration';
-import { ErrorMessage } from '../../components/Notification/errorMessage';
-import { SuccessMessage } from '../../components/Notification/successMessage';
+import { NotificationError } from '../../components/Notification/NotificationError';
+import { NotificationSuccess } from '../../components/Notification/NotificationSuccess';
 
-const Base = () => {
-  const navigate = useNavigate();
-  const location = useLocation();
-  const [cartOpen, setCartOpen] = useState(false)
+function Base() {
+  const navigator = useNavigate();
+  const currentLocation = useLocation();
+  const [isCartOpen, setCartOpen] = useState(false);
+  const [bookCatalog, setBookCatalog] = useState([]);
+  const [featuredBooks, setFeaturedBooks] = useState([]);
+  const [upcomingBooks, setUpcomingBooks] = useState([]);
+  const [cartItems, setCartItems] = useState([]);
+  const [userData, setUserData] = useState({});
 
-  const [catalog, setCatalog] = useState([])
-  const [featured, setFeatured] = useState([])
-  const [coming, setComing] = useState([])
+  const fetchBooks = useCallback(() => {
+    fetch('http://localhost:5000/api/books')
+      .then(response => response.json())
+      .then(data => setBookCatalog(data));
+  }, []);
 
+  const fetchFeaturedBooks = useCallback(() => {
+    fetch('http://localhost:5000/api/books/featured')
+      .then(response => response.json())
+      .then(data => setFeaturedBooks(data));
+  }, []);
 
-  const [userCart, setUserCart] = useState([]);
-    // Mock user data to simulate logged-in user
-  const [profileData, setProfileData] = useState({
-      first_name: "",
-      last_name: "",
-      email: "",
-      phone: "",
-      password: "",
-      streetAddress: "",
-      city: "",
-      state: "",
-      zipCode: "",
-      payment_cards: [{
-        cardName: "",
-        cardNumber: "",
-        cardCVV: "",
-        cardExp: ""
-      }]
-  });
-  console.log("userCart", userCart)
-  console.log("profileData", profileData)
+  const fetchUpcomingBooks = useCallback(() => {
+    fetch('http://localhost:5000/api/books/coming')
+      .then(response => response.json())
+      .then(data => setUpcomingBooks(data));
+  }, []);
 
-  const getBooks = useCallback(() => {
-    fetch('http://localhost:5000/api/book')
-      .then(res => res.json())
-      .then(setCatalog);
-  });
-  const getFeatured = useCallback(() => {
-    fetch('http://localhost:5000/api/book/featured')
-      .then(res => res.json())
-      .then(setFeatured);
-  });
-  const getComing = useCallback(() => {
-    fetch('http://localhost:5000/api/book/coming')
-      .then(res => res.json())
-      .then(setComing);
-  });
   useEffect(() => {
-    if (location.pathname === '/') {
-      navigate("/home");
+    if (currentLocation.pathname === '/') {
+      navigator("/home");
     }
-    getBooks();
-    getFeatured();
-    getComing();
-  }, [navigate, location.pathname]);
+    fetchBooks();
+    fetchFeaturedBooks();
+    fetchUpcomingBooks();
+  }, [navigator, currentLocation.pathname]);
 
-  const addItemToCart = (item) => {
-    const copy = JSON.parse(JSON.stringify(userCart))
-    const exists = copy.find(inCart => inCart._id == item._id)
-    if (exists) {
-      exists.quantity = exists.quantity + 1
-      setUserCart(copy)
+  const handleAddToCart = (book) => {
+    const existingItem = cartItems.find(item => item._id === book._id);
+    if (existingItem) {
+      existingItem.quantity += 1;
+      setCartItems([...cartItems]);
     } else {
-      setUserCart([...userCart, item])
+      setCartItems([...cartItems, { ...book, quantity: 1 }]);
     }
-  }
-
-  const handleLogIn = async (email, password, rememberMe) => {
-    console.log("logging in", email, password, rememberMe)
-    const res = await fetch("http://localhost:5000/api/user/login", {
-      method: "POST",
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        email,
-        password,
-        rememberMe
-      })
-    })
-    const body = await res.json()
-    console.log(body)
-    if (res.status >= 400) {
-      setError(body.message)
-      console.log("Login failed, profileData:")
-      return false
-    } else {
-      setProfileData({...profileData, ...body.data, password})
-      return true
-    }
-
-    // setProfsileData({
-    //   name: "John Smith",
-    //   email: "john.smith@example.com",
-    //   password: "password123",
-    //   streetAddress: "1234 Apple St",
-    //   city: "Athens",
-    //   state: "GA",
-    //   zipCode: "30605",
-    //   cardName: "John Smith",
-    //   cardNumber: "5555 5544 5544 5544",
-    //   cardCVV: "123",
-    //   cardExp: "2029-02",
-    // })
-  }
-
-  const handleForgotPassword = async (email) => {
-    if (!email || email == "") return setError("An email is required!")
-    const res = await fetch("http://localhost:5000/api/user/forgot", {
-        method: "POST",
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          email,
-        })
-      })
-      const body = await res.json()
-      console.log(body)
-      if (res.status >= 400) {
-        setError(body.message)
-        return false
-      } else {
-        setSuccess("Successfully sent temporary password!")
-        return true
-      }
-  }
-
-  const handleRegister = async (firstName, lastName, email, phoneNumber, password) => {
-    console.log("Registering", firstName, lastName, email, phoneNumber, password)
-    const res = await fetch("http://localhost:5000/api/user/register", {
-      method: "POST",
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        first_name: firstName,
-        last_name: lastName,
-        email,
-        phoneNumber,
-        password
-      })
-    })
-    const body = await res.json()
-    console.log(body)
-    if (res.status >= 400) {
-      setError(body.message)
-      return false
-    } else {
-      setProfileData({...profileData, ...body.data, password})
-      navigate("/confirmReg")
-    }
-  }
-
-  const logOut = async () => {
-    setProfileData({
-      first_name: "",
-      last_name: "",
-      email: "",
-      phone: "",
-      password: "",
-      streetAddress: "",
-      city: "",
-      state: "",
-      zipCode: "",
-      payment_cards: [{
-        cardName: "",
-        cardNumber: "",
-        cardCVV: "",
-        cardExp: ""
-      }]
-  })
-  setUserCart([])
-
-  }
-
-  const confirmRegistrationCode = async (code) => {
-    console.log("confirming", code)
-    const res = await fetch("http://localhost:5000/api/user/confirm", {
-      method: "POST",
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        email: profileData.email,
-        comf_code: code
-      })
-    })
-    const body = await res.json()
-    console.log(body)
-    if (res.status >= 400) {
-      setError(body.message)
-      return false
-    } else {
-      setProfileData({...profileData, ...body.data})
-      return true
-    }
-
-  }
-
-  let setError = null;
-  const onErrorMount = (data) => setError = data[1];
-
-  let setSuccess = null;
-  const onSuccessMount = (data) => setSuccess = data[1];
+  };
 
   return (
     <div className='mainContainer'>
-        <Header toggleCartOpen={() => {cartOpen ? setCartOpen(false) : setCartOpen(true)}} />
-        <Routes>
-            <Route path='/home' element={<HomePage catalog={catalog} featured={featured} coming={coming} position="home"/>} />
-            <Route path='/profile' element={<ProfilePage logOut={() => logOut()} userData={profileData} setUserData={data => setProfileData(data)}/>} />
-            <Route path='/search' element={<SearchPage/>} />
-            <Route path='/search/:searchTerm' element={<SearchPage/>} />
-            <Route path='/login' element={<LoginPage login={(email, password, rememberMe) => handleLogIn(email, password, rememberMe)} forgot={(email) => handleForgotPassword(email)}/>} />
-            <Route path='/register' element={<RegisterPage register={(firstName, lastName, email, phoneNumber, password) => handleRegister(firstName, lastName, email, phoneNumber, password)}/>} />
-            <Route path='/confirmReg' element={<ConfirmRegistration tryConfirm={code => confirmRegistrationCode(code)}/>} />
-            <Route path='/receipt' element={<ReceiptPage cartItems={userCart}/>} />
-            <Route path='/product/:id' element={<ProductPage openCart={() => setCartOpen(true)} addToCart={item => addItemToCart(item)} allBooks={catalog} />} />
-            <Route path='/admin/*' element={<AdminPage />} /> {/* doesnt work */}
-            <Route path='/checkout' element={<CheckoutPage userData={profileData} cartItems={userCart} />} /> {/* doesnt work */}
-        </Routes>
-        {cartOpen && <Cart items={userCart} close={() => setCartOpen(false)} setCartItems={list => setUserCart(list.filter(item => item != null))} />}
-        <div className='testingRouteDisplay'>
-          <p>Development Test Links</p>
-          {/* <p onClick={e => navigate("/home")}>-/home</p> */}
-          <p onClick={e => navigate("/search/Great Gatsby")}>-/search (by title)</p>
-          <p onClick={e => navigate("/search/George")}>-/search (by author)</p>
-          <p onClick={e => navigate("/search/978-0553573428")}>-/search (by isbn)</p>
-          {/* <p onClick={e => navigate("/profile")}>-/profile</p>
-          <p onClick={e => navigate("/login")}>-/login</p>
-          <p onClick={e => navigate("/register")}>-/register</p>
-          <p onClick={e => navigate("/receipt")}>-/receipt</p>
-          <p onClick={e => navigate("/product/978-0743273565")}>-/product/:id</p> */}
-        </div>
-
-        <ErrorMessage onMount={onErrorMount}/>
-        <SuccessMessage onMount={onSuccessMount}/>
+      <Header toggleCart={() => setCartOpen(!isCartOpen)} />
+      <Routes>
+        <Route path='/home' element={<HomePage books={bookCatalog} />} />
+        <Route path='/profile' element={<ProfilePage userData={userData} updateUserData={setUserData} />} />
+        <Route path='/search' element={<SearchPage />} />
+        <Route path='/search/:searchTerm' element={<SearchPage />} />
+        <Route path='/login' element={<LoginPage handleLogin={setUserData} />} />
+        <Route path='/register' element={<RegisterPage handleRegistration={setUserData} />} />
+        <Route path='/confirmReg' element={<ConfirmRegistration />} />
+        <Route path='/receipt' element={<ReceiptPage items={cartItems} />} />
+        <Route path='/product/:id' element={<ProductPage addToCart={handleAddToCart} />} />
+        <Route path='/admin/*' element={<AdminPage />} />
+        <Route path='/checkout' element={<CheckoutPage userInfo={userData} cart={cartItems} />} />
+      </Routes>
+      {isCartOpen && <Cart items={cartItems} close={() => setCartOpen(false)} updateItems={setCartItems} />}
+      <div className='testingRouteDisplay'>
+        <p>Development Test Links</p>
+        <p onClick={() => navigator("/home")}>-/home</p>
+        <p onClick={() => navigator("/search/Great Gatsby")}>-/search (by title)</p>
+      </div>
+      <NotificationError />
+      <NotificationSuccess />
     </div>
   );
 }
