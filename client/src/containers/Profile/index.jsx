@@ -38,6 +38,46 @@ const ProfilePage = ({userData, logOut}) => {
 export default ProfilePage
 */
 
+/* import { useEffect } from "react"
+import { useNavigate } from "react-router-dom"
+
+const ProfilePage = ({userData, logOut}) => {
+
+    const navigate = useNavigate()
+
+    // useEffect(() => {
+    //     if (userData == null) {
+    //         navigate("/login?returnTo=/profile")
+    //     }
+    // }, [])
+    
+    useEffect(() => {
+    if (!userData) {
+        navigate("/login?returnTo=/profile");
+    }
+}, [userData, navigate]);
+
+    const userDatas = {
+        name: "John Smith"
+    }
+
+    return (
+        <div className="profileContainer">
+            {userData || userDatas ?
+            <div>
+
+            </div>
+            :
+            <div>
+                <p className="warn">You're not logged in!</p>
+            </div>}
+        </div>
+    )
+}
+
+export default ProfilePage
+*/
+
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
