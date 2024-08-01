@@ -38,30 +38,28 @@ const ProfilePage = ({userData, logOut}) => {
 export default ProfilePage
 */
 
-import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-const ProfilePage = ({ logOut , userData, setUserData}) => {
-    const navigate = useNavigate();
-
-    const [editMode, setEditMode] = useState(false);
-    const [userDetails, setUserDetails] = useState(userData);
+const ProfilePage = ({ userData, setUserData, logOut }) => {
+    const navigator = useNavigate();
+    const [editing, setEditing] = useState(false);
+    const [profileDetails, setProfileDetails] = useState(userData || {});
 
     useEffect(() => {
-        if (!userData || userData.email == "") {
-            return navigate("/login?returnTo=/profile");
+        if (!userData) {
+            navigator("/login?returnTo=/profile");
+        } else if (userData.status === "inactive") {
+            navigator("/confirmReg");
         }
-        if (userData.status == "inactive") {
-            return navigate("/confirmReg?returnTo=/profile")
-        }
-    }, [userData]);
+    }, [userData, navigator]);
 
-    const toggleEditMode = () => {
-        if (editMode) {
-            setUserData(userDetails)
-            setEditMode(false)
+    const handleToggleEdit = () => {
+        if (editing) {
+            setUserData(profileDetails);
+            setEditing(false);
         } else {
-            setEditMode(true)
+            setEditing(true);
         }
     };
 
@@ -69,48 +67,35 @@ const ProfilePage = ({ logOut , userData, setUserData}) => {
         <div className="profileContainer">
             {userData ? (
                 <div>
-                    <h1>Profile</h1>
-                    <div className="profileSettingsGroups">
-                        <div className="profileSettingsContainer">
-                            <h4 style={{marginBottom: "0px"}}>Personal Info</h4>
-                            <p>Name</p>
-                            <input type="text" disabled={"disabled"} value={`${userDetails.first_name} ${userDetails.last_name}`} onChange={e => setUserDetails({...userData, name: e.target.value})}/>
-                            <p>Email</p>
-                            <input type="email" disabled={!editMode ? "disabled" : ""} value={userDetails.email} onChange={e => setUserDetails({...userData, email: e.target.value})} />
-                            <p>Password</p>
-                            <input type="password" disabled={!editMode ? "disabled" : ""} value={userDetails.password} onChange={e => setUserDetails({...userData, password: e.target.value})} />
+                    <h1>User Profile</h1>
+                    {editing ? (
+                        <div className="profileEdit">
+                            <input type="text" value={profileDetails.first_name + ' ' + profileDetails.last_name} onChange={e => setProfileDetails({...profileDetails, first_name: e.target.value.split(' ')[0], last_name: e.target.value.split(' ')[1] || ''})}/>
+                            <input type="email" value={profileDetails.email} onChange={e => setProfileDetails({...profileDetails, email: e.target.value})}/>
+                            <input type="text" value={profileDetails.streetAddress} onChange={e => setProfileDetails({...profileDetails, streetAddress: e.target.value})}/>
+                            <input type="text" value={profileDetails.city} onChange={e => setProfileDetails({...profileDetails, city: e.target.value})}/>
+                            <input type="text" value={profileDetails.state} onChange={e => setProfileDetails({...profileDetails, state: e.target.value})}/>
+                            <input type="text" value={profileDetails.zipCode} onChange={e => setProfileDetails({...profileDetails, zipCode: e.target.value})}/>
+                            <input type="text" value={profileDetails.cardName} onChange={e => setProfileDetails({...profileDetails, cardName: e.target.value})}/>
+                            <input type="password" value={profileDetails.cardNumber} onChange={e => setProfileDetails({...profileDetails, cardNumber: e.target.value})}/>
+                            <input type="password" value={profileDetails.cardCVV} onChange={e => setProfileDetails({...profileDetails, cardCVV: e.target.value})}/>
+                            <input type="month" value={profileDetails.cardExp} onChange={e => setProfileDetails({...profileDetails, cardExp: e.target.value})}/>
+                            <button onClick={handleToggleEdit}>Save Changes</button>
                         </div>
-                        <div className="profileSettingsContainer">
-                            <h4 style={{marginBottom: "0px"}}>Shipping Info</h4>
-                            <p>Street Address</p>
-                            <input type="text" disabled={!editMode ? "disabled" : ""} value={userDetails.streetAddress} onChange={e => setUserDetails({...userData, streetAddress: e.target.value})}/>
-                            <p>City</p>
-                            <input type="text" disabled={!editMode ? "disabled" : ""} value={userDetails.city} onChange={e => setUserDetails({...userData, city: e.target.value})} />
-                            <p>State</p>
-                            <input type="text" disabled={!editMode ? "disabled" : ""} value={userDetails.state} onChange={e => setUserDetails({...userData, state: e.target.value})} />
-                            <p>Zip Code</p>
-                            <input type="text" disabled={!editMode ? "disabled" : ""} value={userDetails.zipCode} onChange={e => setUserDetails({...userData, zipCode: e.target.value})} />
+                    ) : (
+                        <div className="profileDisplay">
+                            <p>Name: {profileDetails.first_name} {profileDetails.last_name}</p>
+                            <p>Email: {profileDetails.email}</p>
+                            <p>Address: {profileDetails.streetAddress}, {profileDetails.city}, {profileDetails.state} {profileDetails.zipCode}</p>
+                            <p>Card Details: **** **** **** {profileDetails.cardNumber.slice(-4)}</p>
+                            <button onClick={handleToggleEdit}>Edit Profile</button>
                         </div>
-                        <div className="profileSettingsContainer">
-                            <h4 style={{marginBottom: "0px"}}>Payment Info</h4>
-                            <p>Cardholder Name</p>
-                            <input type="text" disabled={!editMode ? "disabled" : ""} value={userDetails.cardName} onChange={e => setUserDetails({...userData, cardName: e.target.value})}/>
-                            <p>Card Number</p>
-                            <input type="password" disabled={!editMode ? "disabled" : ""} value={userDetails.cardNumber} onChange={e => setUserDetails({...userData, cardNumber: e.target.value})} />
-                            <p>CVV/CVC</p>
-                            <input type="password" disabled={!editMode ? "disabled" : ""} value={userDetails.cardCVV} onChange={e => setUserDetails({...userData, cardCVV: e.target.value})} />
-                            <p>Expiration MM/YY</p>
-                            <input type="month" disabled={!editMode ? "disabled" : ""} value={userDetails.cardExp} onChange={e => setUserDetails({...userData, cardExp: e.target.value})} />
-                        </div>
-                    </div>
-                    <div className="profileButtons">
-                        <button className="editProfile" onClick={e => logOut()}>Log Out</button>
-                        <button className="editProfile" onClick={e => toggleEditMode()}>{editMode ? "Save Profile" : "Edit Profile"}</button>
-                    </div>
+                    )}
+                    <button onClick={logOut}>Logout</button>
                 </div>
             ) : (
                 <div>
-                    <p className="warn">You're not logged in!</p>
+                    <p className="alert">You are not logged in. Please log in to view your profile.</p>
                 </div>
             )}
         </div>
@@ -118,5 +103,6 @@ const ProfilePage = ({ logOut , userData, setUserData}) => {
 };
 
 export default ProfilePage;
+
 
 
