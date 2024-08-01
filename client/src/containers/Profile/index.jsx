@@ -46,6 +46,7 @@ const ProfilePage = ({ logOut , userData, setUserData}) => {
 
     const [editMode, setEditMode] = useState(false);
     const [userDetails, setUserDetails] = useState(userData);
+    console.log(userData)
 
     useEffect(() => {
         if (!userData || userData.email == "") {
@@ -74,36 +75,39 @@ const ProfilePage = ({ logOut , userData, setUserData}) => {
                         <div className="profileSettingsContainer">
                             <h4 style={{marginBottom: "0px"}}>Personal Info</h4>
                             <p>Name</p>
-                            <input type="text" disabled={"disabled"} value={`${userDetails.first_name} ${userDetails.last_name}`} onChange={e => setUserDetails({...userData, name: e.target.value})}/>
+                            <input type="text" disabled={!editMode ? "disabled" : ""} value={`${userDetails.first_name} ${userDetails.last_name}`} onBlur={e=>setUserData(userDetails)} onChange={e => setUserDetails({...userData, name: e.target.value})}/>
                             <p>Email</p>
-                            <input type="email" disabled={!editMode ? "disabled" : ""} value={userDetails.email} onChange={e => setUserDetails({...userData, email: e.target.value})} />
+                            <input type="email" disabled={"disabled"} value={userDetails.email} onBlur={e=>setUserData(userDetails)} onChange={e => setUserDetails({...userData, email: e.target.value})} />
                             <p>Password</p>
-                            <input type="password" disabled={!editMode ? "disabled" : ""} value={userDetails.password} onChange={e => setUserDetails({...userData, password: e.target.value})} />
+                            <input type="password" disabled={!editMode ? "disabled" : ""} value={userDetails.password} onBlur={e=>setUserData(userDetails)} onChange={e => setUserDetails({...userData, password: e.target.value})} />
                         </div>
                         <div className="profileSettingsContainer">
                             <h4 style={{marginBottom: "0px"}}>Shipping Info</h4>
                             <p>Street Address</p>
-                            <input type="text" disabled={!editMode ? "disabled" : ""} value={userDetails.streetAddress} onChange={e => setUserDetails({...userData, streetAddress: e.target.value})}/>
+                            <input type="text" disabled={!editMode ? "disabled" : ""} value={userDetails.streetAddress} onBlur={e=>setUserData(userDetails)} onChange={e => setUserDetails({...userData, streetAddress: e.target.value})}/>
                             <p>City</p>
-                            <input type="text" disabled={!editMode ? "disabled" : ""} value={userDetails.city} onChange={e => setUserDetails({...userData, city: e.target.value})} />
+                            <input type="text" disabled={!editMode ? "disabled" : ""} value={userDetails.city} onBlur={e=>setUserData(userDetails)} onChange={e => setUserDetails({...userData, city: e.target.value})} />
                             <p>State</p>
-                            <input type="text" disabled={!editMode ? "disabled" : ""} value={userDetails.state} onChange={e => setUserDetails({...userData, state: e.target.value})} />
+                            <input type="text" disabled={!editMode ? "disabled" : ""} value={userDetails.state} onBlur={e=>setUserData(userDetails)} onChange={e => setUserDetails({...userData, state: e.target.value})} />
                             <p>Zip Code</p>
-                            <input type="text" disabled={!editMode ? "disabled" : ""} value={userDetails.zipCode} onChange={e => setUserDetails({...userData, zipCode: e.target.value})} />
+                            <input type="text" disabled={!editMode ? "disabled" : ""} value={userDetails.zipCode} onBlur={e=>setUserData(userDetails)} onChange={e => setUserDetails({...userData, zipCode: e.target.value})} />
                         </div>
                         <div className="profileSettingsContainer">
                             <h4 style={{marginBottom: "0px"}}>Payment Info</h4>
                             <p>Cardholder Name</p>
-                            <input type="text" disabled={!editMode ? "disabled" : ""} value={userDetails.cardName} onChange={e => setUserDetails({...userData, cardName: e.target.value})}/>
+                            <input type="text" disabled={!editMode ? "disabled" : ""} value={userDetails.cardName} onBlur={e=>setUserData(userDetails)} onChange={e => setUserDetails({...userData, cardName: e.target.value})}/>
                             <p>Card Number</p>
-                            <input type="password" disabled={!editMode ? "disabled" : ""} value={userDetails.cardNumber} onChange={e => setUserDetails({...userData, cardNumber: e.target.value})} />
+                            <input type="password" disabled={!editMode ? "disabled" : ""} value={userDetails.cardNumber} onBlur={e=>setUserData(userDetails)} onChange={e => setUserDetails({...userData, cardNumber: e.target.value})} />
                             <p>CVV/CVC</p>
-                            <input type="password" disabled={!editMode ? "disabled" : ""} value={userDetails.cardCVV} onChange={e => setUserDetails({...userData, cardCVV: e.target.value})} />
+                            <input type="password" disabled={!editMode ? "disabled" : ""} value={userDetails.cardCVV} onBlur={e=>setUserData(userDetails)} onChange={e => setUserDetails({...userData, cardCVV: e.target.value})} />
                             <p>Expiration MM/YY</p>
-                            <input type="month" disabled={!editMode ? "disabled" : ""} value={userDetails.cardExp} onChange={e => setUserDetails({...userData, cardExp: e.target.value})} />
+                            <input type="month" disabled={!editMode ? "disabled" : ""} value={userDetails.cardExp} onBlur={e=>setUserData(userDetails)} onChange={e => setUserDetails({...userData, cardExp: e.target.value})} />
                         </div>
                     </div>
                     <div className="profileButtons">
+                        {userData.admin == true && 
+                            <button className="editProfile" onClick={e => navigate("/admin")}>Admin</button>
+                        }
                         <button className="editProfile" onClick={e => logOut()}>Log Out</button>
                         <button className="editProfile" onClick={e => toggleEditMode()}>{editMode ? "Save Profile" : "Edit Profile"}</button>
                     </div>

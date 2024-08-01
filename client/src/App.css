@@ -633,7 +633,8 @@ h1 {
  cursor: pointer;
 }
 
-.profileButtons > button:nth-of-type(1) {
+.profileButtons > button:nth-of-type(1),
+.profileButtons > button:nth-of-type(2) {
   background-color: #e3ecf1;
   color: #939699;
 }
@@ -1019,4 +1020,18 @@ h1 {
 
 .testingRouteDisplay > p:not(:first-of-type):hover {
   color: #ffffff;
+}
+
+.addRow {
+  display: flex;
+  flex-flow: row nowrap;
+  gap: 20px;
+  height: 30px;
+}
+
+.addRow > input {
+  flex: 1;
+}
+.addRow > button {
+  cursor: pointer;
 }

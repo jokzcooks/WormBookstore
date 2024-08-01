@@ -16,18 +16,7 @@ const RegisterPage = ({ register }) => {
 
     const createAccount = async (e) => {
         e.preventDefault();
-        console.log("Creating account!", firstName, lastName, email, phoneNumber, password);
-        try {
-            const res = await register(firstName, lastName, email, phoneNumber, password);
-            if (res.status === 201) {
-                navigate(res.redirectUrl);
-            } else {
-                alert(res.message || 'Registration failed');
-            }
-        } catch (error) {
-            console.error("Error during registration:", error);
-            alert("An error occurred during registration. Please try again.");
-        }
+        await register(firstName, lastName, email, phoneNumber, password, returnTo);
     };
 
     const applyPhonePattern = (val) => {

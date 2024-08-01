@@ -1,57 +1,53 @@
 import React, { useEffect, useState } from 'react';
 
-const ManagePromotions = () => {
+const ManagePromotions = ({}) => {
   const [promotions, setPromotions] = useState([
-    {
-        "description": "53% Off",
-        "id": 3276978253
-    },
-    {
-        "description": "97% Off",
-        "id": 3539174252
-    },
-    {
-        "description": "32% Off",
-        "id": 9230407302
-    },
-    {
-        "description": "94% Off",
-        "id": 6991203811
-    },
-    {
-        "description": "49% Off",
-        "id": 9909387712
-    },
-    {
-        "description": "44% Off",
-        "id": 8608225400
-    }
-]);
+  ]);
+  const [newPromotionData, setNewPromotionData] = useState("")
 
   useEffect(() => {
     fetchPromotions();
   }, []);
 
   const fetchPromotions = async () => {
-    const response = await fetch('/api/promotions'); // Adjust URL as necessary
+    console.log("Fetching promotions")
+    const response = await fetch('http://localhost:5000/api/promotion'); // Adjust URL as necessary
     const data = await response.json();
+    console.log(data)
     setPromotions(data);
   };
 
   const handleDelete = async (id) => {
-    await fetch(`/api/promotions/${id}`, { method: 'DELETE' });
+    await fetch(`http://localhost:5000/api/promotion/${id}`, { method: 'DELETE' });
     fetchPromotions(); // Refresh the list after delete
   };
+  
+  const addPromotion = async (data) => {
+    const res = await fetch("http://localhost:5000/api/promotion", {
+      method: "POST",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: newPromotionData
+    })
+    setNewPromotionData("")
+    fetchPromotions()
+  }
 
   return (
     <div className='profileSettingsContainer'>
       <h2>Promotions</h2>
-      {promotions.map(promotion => (
+      {promotions && promotions.map(promotion => (
         <div key={promotion.id}>
-          {promotion.description}
-          <button onClick={() => handleDelete(promotion.id)}>🗑️</button>
+          {`[${promotion.percentage}%] ${promotion.promo_code}`}
+          <button onClick={() => handleDelete(promotion._id)}>🗑️</button>
         </div>
       ))}
+      <div className='addRow'>
+        <input value={newPromotionData} onChange={e => setNewPromotionData(e.target.value)} type="text" name="" id="" placeholder="New Promotion Data"  />
+        <button onClick={() => {addPromotion()}}>Add Promo</button>
+      </div>
     </div>
   );
 };

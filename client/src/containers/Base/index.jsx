@@ -24,9 +24,10 @@ const Base = () => {
   const [featured, setFeatured] = useState([])
   const [coming, setComing] = useState([])
 
-
   const [userCart, setUserCart] = useState([]);
-    // Mock user data to simulate logged-in user
+
+  const [adminPageData, setAdminPageData] = useState({})
+
   const [profileData, setProfileData] = useState({
       first_name: "",
       last_name: "",
@@ -37,6 +38,7 @@ const Base = () => {
       city: "",
       state: "",
       zipCode: "",
+      admin: false,
       payment_cards: [{
         cardName: "",
         cardNumber: "",
@@ -66,10 +68,29 @@ const Base = () => {
     if (location.pathname === '/') {
       navigate("/home");
     }
+    if (location.pathname === "/admin" && (!profileData || profileData.admin == false) )
+      navigate("/home");
     getBooks();
     getFeatured();
     getComing();
   }, [navigate, location.pathname]);
+
+  const getAdminPageData = useCallback(() => {
+    fetch('http://localhost:5000/api/admin/data')
+      .then(res => res.json())
+      .then(data => {
+        console.log("Fetched admin data: ", data)
+        setAdminPageData(data)
+    });
+  });
+
+  useEffect(() => {
+    if (profileData && profileData.admin == true) {
+      getAdminPageData()
+    } else {
+      setAdminPageData({})
+    }
+  }, [profileData])
 
   const addItemToCart = (item) => {
     const copy = JSON.parse(JSON.stringify(userCart))
@@ -145,8 +166,8 @@ const Base = () => {
       }
   }
 
-  const handleRegister = async (firstName, lastName, email, phoneNumber, password) => {
-    console.log("Registering", firstName, lastName, email, phoneNumber, password)
+  const handleRegister = async (firstName, lastName, email, phoneNumber, password, returnTo) => {
+    console.log("Registering", firstName, lastName, email, phoneNumber, password, returnTo)
     const res = await fetch("http://localhost:5000/api/user/register", {
       method: "POST",
       headers: {
@@ -164,11 +185,15 @@ const Base = () => {
     const body = await res.json()
     console.log(body)
     if (res.status >= 400) {
-      setError(body.message)
+      setError(body.message || "An error occurred during registration. Please try again.")
       return false
     } else {
       setProfileData({...profileData, ...body.data, password})
-      navigate("/confirmReg")
+      if (returnTo) {
+        navigate(`/confirmReg?returnTo=${returnTo}`)
+      } else {
+        navigate("/confirmReg")
+      }
     }
   }
 
@@ -183,6 +208,7 @@ const Base = () => {
       city: "",
       state: "",
       zipCode: "",
+      admin: false,
       payment_cards: [{
         cardName: "",
         cardNumber: "",
@@ -234,26 +260,26 @@ const Base = () => {
             <Route path='/search' element={<SearchPage/>} />
             <Route path='/search/:searchTerm' element={<SearchPage/>} />
             <Route path='/login' element={<LoginPage login={(email, password, rememberMe) => handleLogIn(email, password, rememberMe)} forgot={(email) => handleForgotPassword(email)}/>} />
-            <Route path='/register' element={<RegisterPage register={(firstName, lastName, email, phoneNumber, password) => handleRegister(firstName, lastName, email, phoneNumber, password)}/>} />
+            <Route path='/register' element={<RegisterPage register={(firstName, lastName, email, phoneNumber, password, returnTo) => handleRegister(firstName, lastName, email, phoneNumber, password, returnTo)}/>} />
             <Route path='/confirmReg' element={<ConfirmRegistration tryConfirm={code => confirmRegistrationCode(code)}/>} />
             <Route path='/receipt' element={<ReceiptPage cartItems={userCart}/>} />
             <Route path='/product/:id' element={<ProductPage openCart={() => setCartOpen(true)} addToCart={item => addItemToCart(item)} allBooks={catalog} />} />
-            <Route path='/admin/*' element={<AdminPage />} /> {/* doesnt work */}
+            <Route path='/admin' element={<AdminPage adminData = {adminPageData}/>} /> {/* doesnt work */}
             <Route path='/checkout' element={<CheckoutPage userData={profileData} cartItems={userCart} />} /> {/* doesnt work */}
         </Routes>
         {cartOpen && <Cart items={userCart} close={() => setCartOpen(false)} setCartItems={list => setUserCart(list.filter(item => item != null))} />}
-        <div className='testingRouteDisplay'>
-          <p>Development Test Links</p>
+        {/* <div className='testingRouteDisplay'> */}
+          {/* <p>Development Test Links</p> */}
           {/* <p onClick={e => navigate("/home")}>-/home</p> */}
-          <p onClick={e => navigate("/search/Great Gatsby")}>-/search (by title)</p>
+          {/* <p onClick={e => navigate("/search/Great Gatsby")}>-/search (by title)</p>
           <p onClick={e => navigate("/search/George")}>-/search (by author)</p>
-          <p onClick={e => navigate("/search/978-0553573428")}>-/search (by isbn)</p>
+          <p onClick={e => navigate("/search/978-0553573428")}>-/search (by isbn)</p> */}
           {/* <p onClick={e => navigate("/profile")}>-/profile</p>
           <p onClick={e => navigate("/login")}>-/login</p>
           <p onClick={e => navigate("/register")}>-/register</p>
           <p onClick={e => navigate("/receipt")}>-/receipt</p>
           <p onClick={e => navigate("/product/978-0743273565")}>-/product/:id</p> */}
-        </div>
+        {/* </div> */}
 
         <ErrorMessage onMount={onErrorMount}/>
         <SuccessMessage onMount={onSuccessMount}/>

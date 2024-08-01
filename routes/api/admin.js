@@ -1,7 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const { User, Admin } = require('../../db/models/User'); // Adjust the path according to your file structure
+const { User, Admin, Customer } = require('../../db/models/User'); // Adjust the path according to your file structure
 const { isLoggedIn, isAdmin } = require('../../middleware/auth'); // Adjust the path according to your file structure
+const Promotion = require('../../db/models/Promotion');
+const Book = require('../../db/models/Book');
 
 // @route   POST api/admin
 // Create a new admin
@@ -28,6 +30,25 @@ router.get('/', isLoggedIn, isAdmin, async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 });
+
+
+// @route   GET api/admin
+// Get all admins
+router.get('/data', isLoggedIn, isAdmin, async (req, res) => {
+  try {
+    const customers = await Customer.find();
+    const books = await Book.find();
+    const promotions = await Promotion.find();
+    res.json({
+      customers,
+      books,
+      promotions
+    });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 
 // @route   GET api/admin/:id
 // Get admin by ID
@@ -79,14 +100,17 @@ router.delete('/:id', isLoggedIn, isAdmin, async (req, res) => {
 // Suspend a user
 router.put('/suspend/:id', isLoggedIn, isAdmin, async (req, res) => {
   try {
-    const updatedUser = await User.findByIdAndUpdate(
+    console.log("Suspending user!")
+    const updatedUser = await Customer.findByIdAndUpdate(
       req.params.id,
       { status: 'suspended' },
       { new: true, runValidators: true }
     );
     if (!updatedUser) {
+      console.log("Couldn't find user")
       return res.status(404).json({ message: 'Cannot find user' });
     }
+    console.log(updatedUser)
     res.json({ message: 'User suspended successfully', user: updatedUser });
   } catch (err) {
     res.status(400).json({ message: err.message });
@@ -97,7 +121,8 @@ router.put('/suspend/:id', isLoggedIn, isAdmin, async (req, res) => {
 // Unsuspend a user
 router.put('/unsuspend/:id', isLoggedIn, isAdmin, async (req, res) => {
   try {
-    const updatedUser = await User.findByIdAndUpdate(
+    console.log("Unsuspending user!")
+    const updatedUser = await Customer.findByIdAndUpdate(
       req.params.id,
       { status: 'active' },
       { new: true, runValidators: true }
@@ -105,6 +130,7 @@ router.put('/unsuspend/:id', isLoggedIn, isAdmin, async (req, res) => {
     if (!updatedUser) {
       return res.status(404).json({ message: 'Cannot find user' });
     }
+    console.log("User unsuspended successfully!")
     res.json({ message: 'User unsuspended successfully', user: updatedUser });
   } catch (err) {
     res.status(400).json({ message: err.message });

@@ -16,6 +16,8 @@ const promotions = require('../dummy_data/dummyPromotions');
 const vendors = require('../dummy_data/dummyVendors');
 const employees = require('../dummy_data/dummyEmployees');
 
+const bcrypt = require('bcrypt');
+
 const mongoDB = process.env.MONGO_URL;
 
 // Log the MongoDB URI to confirm it is being read correctly

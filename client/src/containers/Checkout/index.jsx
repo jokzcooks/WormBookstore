@@ -3,14 +3,58 @@ import { useNavigate } from 'react-router-dom';
 
 const CheckoutPage = ({userData, cartItems}) => {
     // Initialize state for form fields
+    console.log("Userdata: ", userData)
     const navigate = useNavigate()
-    const [formData, setFormData] = useState(userData);
+    const [formData, setFormData] = useState({
+        ...userData,
+        name: `${userData.first_name} ${userData.last_name}`
+    });
+    const [promoCode, setPromoCode] = useState("")
+    const [promotion, setPromotion] = useState({})
 
     console.log(userData)
-    console.log(formData)
+    console.log("formData:", formData)
+
+
+    // useEffect(() => {
+    //     calculateTotal()
+    // }, [promotion])
+
+    const sendConfirmationEmail = async (name) =>{
+        try {
+            const res = await fetch("http://localhost:5000/api/order/emailOrder", {
+                method: "POST",
+                headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    email: formData.email,
+                    total: calculateTotal()
+                })
+            })
+        } catch {
+
+        }
+    }
+
+    const fetchPromotion = async (name) =>{
+        try {
+            var result = await fetch(`http://localhost:5000/api/promotion/${name}`, { method: 'GET' });
+            setPromotion(result)
+        } catch {
+
+        }
+    }
 
     useEffect(() => {
-        setFormData(userData)
+        fetchPromotion(promoCode)
+    }, [promoCode])
+    useEffect(() => {
+        setFormData({
+            ...userData,
+            name: `${userData.first_name} ${userData.last_name}`
+        })
         if (!cartItems || cartItems.length == 0) navigate("/")
     }, [userData])
 
@@ -30,7 +74,10 @@ const CheckoutPage = ({userData, cartItems}) => {
 
     // Calculate the total cost of the cart
     const calculateTotal = () => {
-        return cartItems.reduce((total, item) => total + item.sell_price * item.quantity, 0).toFixed(2);
+        var total = cartItems.reduce((total, item) => total + item.sell_price * item.quantity, 0).toFixed(2);
+        console.log(total)
+        if (promotion) return Number(total)*0.5
+        return total
     };
 
     return (
@@ -51,8 +98,8 @@ const CheckoutPage = ({userData, cartItems}) => {
                     <h4 style={{marginBottom: "0px"}}>Payment Info</h4>
                     <input type="text" name="cardName" placeholder="Card Holder Name" required value={formData?.cardName || ""} onChange={handleChange} />
                     <input type="text" name="cardNumber" placeholder="Card Number" required value={formData?.cardNumber || ""} onChange={handleChange} />
-                    <input type="month" name="expDate" placeholder="Expiration Date" required value={formData?.cardExp || ""} onChange={handleChange} />
-                    <input type="number" name="cvv" placeholder="CVV" required value={formData?.cardCVV || ""} onChange={handleChange} />
+                    <input type="month" name="cardExp" placeholder="Expiration Date" required value={formData?.cardExp || ""} onChange={handleChange} />
+                    <input type="number" name="cardCVV" placeholder="CVV" required value={formData?.cardCVV || ""} onChange={handleChange} />
                 </div>
                 <div className="profileSettingsContainer">
                     <h2>Order Summary</h2>
@@ -64,9 +111,11 @@ const CheckoutPage = ({userData, cartItems}) => {
                             <p>{item.title} - {item.quantity} x ${item.sell_price}</p>
                         </div>
                     )})}
-                    <h3>Total: ${calculateTotal()}</h3>
+                    <h3>Total: ${Number(calculateTotal())}</h3>
 
-                    <button className='placeOrder' type="submit">Place Order</button>
+                    <input onChange={e => setPromoCode(e.target.value)} type="text" placeholder='Promo Code'/>
+
+                    <button onClick={e => sendConfirmationEmail()} className='placeOrder' type="submit">Place Order</button>
 
                 </div>
             </div>

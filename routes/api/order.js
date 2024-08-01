@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Order = require('../../db/models/Order'); 
+const { sendEmail } = require('../../emailService');
 
 // @route   POST api/order
 // Create a new order
@@ -16,6 +17,17 @@ router.post('/', async (req, res) => {
     res.status(400).json({ message: err.message });
   }
 });
+
+// POST api/order
+router.post('/emailOrder', async (req, res) => {
+  const order = req.body
+
+  try {
+    sendEmail(order.email, "Order Placed!", `Thank you for your order of ${order.total}`)
+  } catch (err) {
+
+  }
+})
 
 // @route   GET api/order
 // Get all orders

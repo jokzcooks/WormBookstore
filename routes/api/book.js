@@ -5,14 +5,21 @@ const Book = require('../../db/models/Book');
 // @route   POST api/book
 // Create a book
 router.post('/', async (req, res) => {
+  
+  console.log("api/book POST")
+  console.log(req.body)
+
   const book = new Book({
     ...req.body
   });
 
   try {
+    console.log("Saving book")
     const newBook = await book.save();
+    console.log(newBook)
     res.status(201).json(newBook);
   } catch (err) {
+    console.log(err)
     res.status(400).json({ message: err.message });
   }
 });

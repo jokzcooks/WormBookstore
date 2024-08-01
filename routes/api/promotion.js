@@ -44,9 +44,9 @@ router.get('/code/:promo_code', async (req, res) => {
 
 // @route   GET api/promotion/:id
 // Get promotion by ID
-router.get('/:id', async (req, res) => {
+router.get('/:promo_code', async (req, res) => {
   try {
-    const promotion = await Promotion.findById(req.params.id);
+    const promotion = await Promotion.findOne({promo_code: req.params.promo_code});
     if (!promotion) {
       return res.status(404).json({ message: 'Cannot find promotion' });
     }
